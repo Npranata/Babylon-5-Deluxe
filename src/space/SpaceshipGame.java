@@ -224,8 +224,8 @@ public class SpaceshipGame {
     }
 
     public void createEnemyShip(double upperLeftX, double upperLeftY, double scale, double angle, double speed){
-        for (int i =0; i < 1; i++){
-            enemyShip = new EnemyShip(i * 30, i * 100, scale);
+        for (int i =0; i < 10; i++){
+            enemyShip = new EnemyShip(i * 30, -50, scale);
             groupManager.addEnemyShip(enemyShip);
         }
         canvas.add(groupManager.getEnemyShipGroup());
@@ -259,7 +259,7 @@ public class SpaceshipGame {
             imageBack.setImagePath("ship-icons/spaceBackground.png"); 
             imageBack.setCenter(0,0);
             imageBack.setScale(5);
-            // canvas.add(imageBack);
+            canvas.add(imageBack);
         }
         createPlayerShip(220,600, 0.2);
         createEnemyShip(220, 100, 0.170,50,70);
