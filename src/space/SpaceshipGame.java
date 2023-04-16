@@ -121,7 +121,7 @@ public class SpaceshipGame {
             if(!pause){
                 enemyShipMovementAndCollision();
                 for (Laser laser : groupManager.getLaserList()) {
-                    if (!(laser.getY() < -50 || laser.getY() > CANVAS_HEIGHT + 50)) {
+                    if (!(laser.getY() < -200 || laser.getY() > CANVAS_HEIGHT + 50)) {
                         laser.moveLaser();
                     } else {
                         oldLaser = laser;
