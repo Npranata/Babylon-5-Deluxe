@@ -11,6 +11,7 @@ public class Laser {
     private static final double LASER_RADIUS = 10;
 
     private double centerX, centerY, initialSpeed, initialAngle, currentXVelocity, currentYVelocity;
+    private int chooseColor;
 
     private Random random;
 
@@ -23,15 +24,15 @@ public class Laser {
             double centerX,
             double centerY,
             double initialSpeed,
-            double initialAngle) {
+            double initialAngle,
+            int chooseColor) {
 
         this.centerX = centerX;
         this.centerY = centerY;
         this.initialSpeed = initialSpeed;
         this.initialAngle = initialAngle;
 
-        laserImage = new Image("ship-icons/laser.png");
-        laserImage.rotateBy(-90);
+        laserImage = getImageColor(chooseColor);
         laserImage.setCenter(centerX, centerY);
         laserImage.setScale(0.3);
 
@@ -42,15 +43,29 @@ public class Laser {
         currentYVelocity = initialYVelocity;
     }
 
+    private Image getImageColor(int chooseColor) {
+        Image laserImage;
+        if (chooseColor == 1) {
+            laserImage = new Image("ship-icons/laser.png");
+            laserImage.rotateBy(-90);
+
+        } else {
+            laserImage = new Image("ship-icons/enemyLaser.png");
+            laserImage.rotateBy(90);
+
+        }
+        return laserImage;
+    }
+
     /**
-     * Returns the x-value of the ball's upper left corner box for use in collision detection.
+     * Returns the x-value of the laser's upper left corner box for use in collision detection.
      */
     public double getX() {
         return laserImage.getPosition().getX();
     }
 
     /**
-     * Returns the y-value of the ball's upper left corner box for use in collision detection.
+     * Returns the y-value of the laser's upper left corner box for use in collision detection.
      */
     public double getY() {
         return laserImage.getPosition().getY();

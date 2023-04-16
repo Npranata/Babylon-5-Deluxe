@@ -15,6 +15,7 @@ public class EnemyShip {
     private GraphicsObject element;
 
     private Laser selectedLaser; 
+    private int currentHealth = 100;
     private EnemyShip selectedEnemyShip;
     private double originalX, originalY;
     private double centerX, centerY;
@@ -34,6 +35,11 @@ public class EnemyShip {
     public Image getEnemyShipImage(){
         return enemyShipIcon;
     }
+
+    public Point getPosition() {
+        return enemyShipIcon.getCenter();
+    }
+
     /**
      * Sets the enemy spaceship's starting angle and velocity
      */
@@ -54,10 +60,6 @@ public class EnemyShip {
         }
     }
 
-    // public void remove(List<EnemyShip> enemyShipList, GraphicsGroup enemyGroup) {
-    //     enemyShipList.remove(this);
-    //     enemyGroup.remove(this.getEnemyShipImage());
-    // } // TODO: Why is this method here?
 
 
     /**
@@ -77,12 +79,19 @@ public class EnemyShip {
             }
         }
         if (selectedLaser != null) {
-            groupManager.removeLaser(selectedLaser);
+            groupManager.removePlayerLaser(selectedLaser);
             selectedLaser = null;
+            decreaseCurrentHealth();
+            if (currentHealth == 0) {
             return true;
+            }
         }
 
         return false;
+    }
+
+    private void decreaseCurrentHealth() {
+        this.currentHealth -= 10;
     }
 
     private GraphicsObject checkCollisionPoints(GroupManager groupManager) {

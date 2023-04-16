@@ -3,6 +3,8 @@ package space;
 import edu.macalester.graphics.ui.Button;
 import edu.macalester.graphics.*;
 import edu.macalester.graphics.events.Key;
+
+import java.awt.Color;
 import java.util.Random;
 
 /**
@@ -18,7 +20,7 @@ public class SpaceshipGame {
 
     private CanvasWindow canvas;
 
-    private GraphicsText lifeDisplay, livesDisplay, gameOverText, gameWinText, startGameText;
+    private GraphicsText lifeDisplay, livesDisplay, gameOverText, gameWinText, startGameText, scoreDisplay;
     private Button startButton;
     private Button restartButton;
 
@@ -31,11 +33,13 @@ public class SpaceshipGame {
     private EnemyShip enemyShip;
     private EnemyShip selectedEnemyShip;
     private Random rand = new Random();
+    private int movementCounter = 0;
+   
 
 
     private Border rightBorder, leftBorder, topBorder;
 
-    private int HP, currentHP, lives, currentLives;
+    private int HP, currentHP, lives, currentLives,currentScore;
 
     private double initialSpeed = 50;
 
@@ -50,9 +54,17 @@ public class SpaceshipGame {
 
         lives = 2; // Stores the total number of lives the user has each round.
         currentLives = 2; // Stores the number of lives the user has at the moment.
-
+        currentScore = 0;
         HP = 100;
         currentHP = 100;
+
+        //Text that displays the current score
+        scoreDisplay = new GraphicsText();
+
+        //Score Text
+        //scoreDisplay.setFont(FontStyle.BOLD,50);
+        //scoreDisplay.setPosition(50,50); //placeholder for right now
+        //scoreDisplay.setText("Current Score:");
 
         // Text that displays the number of lives the user currently has.
         livesDisplay = new GraphicsText();
@@ -88,6 +100,7 @@ public class SpaceshipGame {
 
         canvas.add(startGameText);
         canvas.add(startButton);
+        canvas.add(scoreDisplay);
 
         startButton.onClick(() -> {
             resetGame();;
@@ -98,9 +111,6 @@ public class SpaceshipGame {
             resetGame();
         });
 
-        // A change in time used to update the ball's position.
-        double dt = 0.15;
-
         /*
          * Animates the canvas when a pause screen (i.e. Start, Win, or Game Over) is not displayed (when pause = false).
          * Keeps track of the current state of the game using booleans and updates the ball's position when the
@@ -109,17 +119,7 @@ public class SpaceshipGame {
 
         canvas.animate(()->{
             if(!pause){
-                for (EnemyShip enemyShip : groupManager.getEnemyShipList()){
-                    enemyShip.moveEnemyShip(canvas);
-                    if (enemyShip.checkLaserCollision(groupManager)) {
-                        selectedEnemyShip = enemyShip;
-                    }
-                }  
-                if (selectedEnemyShip != null) {
-                    groupManager.removeEnemyShip(selectedEnemyShip);
-                    System.out.println(selectedEnemyShip);
-                    selectedEnemyShip = null;
-                }
+                enemyShipMovementAndCollision();
                 for (Laser laser : groupManager.getLaserList()) {
                     if (!(laser.getY() < -50 || laser.getY() > CANVAS_HEIGHT + 50)) {
                         laser.moveLaser();
@@ -128,15 +128,55 @@ public class SpaceshipGame {
                     }
                 }
                 if (oldLaser != null) {
-                    groupManager.removeLaser(oldLaser);
+                    groupManager.removePlayerLaser(oldLaser);
+                    oldLaser = null;
+                }
+                for (Laser laser : groupManager.getEnemyLaserList()) {
+                    if (!(laser.getY() < -50 || laser.getY() > CANVAS_HEIGHT + 50)) {
+                        laser.moveLaser();
+                    } else {
+                        oldLaser = laser;
+                    }
+                }
+                if (oldLaser != null) {
+                    groupManager.removeEnemyLaser(oldLaser);
                     oldLaser = null;
                 }
             }
         });
-
-        /*
-         * Allows the user to control the paddle's position using the mouse cursor.
-         */
+        mouseControl();
+        keyControl();
+    }
+    
+    /**
+     * Handles enemy ships' movement and the laser collison with the enemy ships. It also updates the
+     * current score every time an enemy ship is removed from the canvas.
+     */
+    private void enemyShipMovementAndCollision() {
+        for (EnemyShip enemyShip : groupManager.getEnemyShipList()){
+            enemyShip.moveEnemyShip(canvas);
+            movementCounter ++;
+            if (enemyShip.checkLaserCollision(groupManager)) {
+                selectedEnemyShip = enemyShip;
+            }
+            if (movementCounter == 111) {
+                movementCounter = 0;
+                createLaser(enemyShip.getPosition().getX(), enemyShip.getPosition().getY() + 40, 10, -90, 0);
+            }
+        } 
+        if (selectedEnemyShip != null) {
+            groupManager.removeEnemyShip(selectedEnemyShip);
+            currentScore += 10;
+            scoreDisplay.setText("Score: " + currentScore);
+            canvas.add(scoreDisplay);
+            selectedEnemyShip = null;
+        }
+    }
+    
+    /** 
+     * Makes player ship move according to where the mouse moves
+     */
+    private void mouseControl(){
         canvas.onMouseMove(mousePosition -> {
             if (!pause) {
                 if (mousePosition.getPosition().getX() > leftBorder.getBorderWidth() + leftBorder.getBorderX() &&
@@ -145,14 +185,19 @@ public class SpaceshipGame {
                 }
             }
         });
-
+    }
+    /**
+     * Makes laser shoot out of the player's ship when the player presses the space bar 
+     */
+    private void keyControl(){
         canvas.onKeyDown(key -> {
             if (key.getKey() == Key.SPACE) {
                 if (!pause) {
-                    createLaser(playerShip.getPosition().getX(), playerShip.getPosition().getY() - 20, 10, 90);
+                    createLaser(playerShip.getPosition().getX(), playerShip.getPosition().getY() - 20, 10, 90, 1);
                 }
             }         
         });
+
     }
 
     public static void main(String[] args){
@@ -201,6 +246,11 @@ public class SpaceshipGame {
         currentLives = 2;
         currentHP = 100;
     }
+    
+    /**
+     * Keeps track of the score depending on how many enemy ships have been destroyed
+     */
+    
 
     /**
      * Creates a laser on the canvas by calling the constructor in the Laser class.
@@ -208,10 +258,16 @@ public class SpaceshipGame {
     public void createLaser(double centerX,
                         double centerY,
                         double initialSpeed,
-                        double initialAngle) {
-        laser = new Laser(centerX, centerY, initialSpeed, initialAngle);
-        groupManager.addLaser(laser);
+                        double initialAngle,
+                        int chooseColor) {
+        laser = new Laser(centerX, centerY, initialSpeed, initialAngle, chooseColor);
+        if (chooseColor == 1) {
+            groupManager.addLaser(laser);
+        } else {
+            groupManager.addEnemyLaser(laser);
+        }
         canvas.add(groupManager.getLaserGroup());
+        canvas.add(groupManager.getEnemyLaserGroup());
     }
 
     /**
@@ -224,9 +280,11 @@ public class SpaceshipGame {
     }
 
     public void createEnemyShip(double upperLeftX, double upperLeftY, double scale, double angle, double speed){
-        for (int i =0; i < 10; i++){
-            enemyShip = new EnemyShip(i * 30, -50, scale);
+        for (int i = 0; i < 5; i++){
+            for (int j = -400; j < 0; j += 100) {
+            enemyShip = new EnemyShip(i * 30, j, scale);
             groupManager.addEnemyShip(enemyShip);
+            }
         }
         canvas.add(groupManager.getEnemyShipGroup());
     }
@@ -238,7 +296,7 @@ public class SpaceshipGame {
      * Then creates the game components for a new round and allows the game to run.
      */
     private void resetGame() {
-        // groupManager.removeAllBricks();
+        groupManager.removeAll();
         canvas.removeAll();
         createGame();
         pause = false;
@@ -250,7 +308,6 @@ public class SpaceshipGame {
      * After the components are prepared, the game is paused for a moment to ready the player before it starts.
      */
     private void createGame() {
-        
         if (currentLives == 2) {
             createBounds();
             livesDisplay.setFont(FontStyle.BOLD, 20);
@@ -260,10 +317,15 @@ public class SpaceshipGame {
             imageBack.setCenter(0,0);
             imageBack.setScale(5);
             canvas.add(imageBack);
+            scoreDisplay.setFont(FontStyle.BOLD,30);
+            scoreDisplay.setFillColor(Color.WHITE);
+            scoreDisplay.setPosition(15,50);
         }
+        livesDisplay.setText("Lives: " + currentLives);
+        scoreDisplay.setText("Score: " + currentScore);
+        canvas.add(scoreDisplay);
         createPlayerShip(220,600, 0.2);
         createEnemyShip(220, 100, 0.170,50,70);
-        livesDisplay.setText("Lives: " + currentLives);
         canvas.draw();
         canvas.pause(100);
     }
