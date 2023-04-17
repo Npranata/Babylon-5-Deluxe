@@ -4,6 +4,7 @@ import edu.macalester.graphics.CanvasWindow;
 
 import java.util.ArrayList;
 import edu.macalester.graphics.GraphicsGroup;
+import edu.macalester.graphics.Image;
 import java.util.List;
 
 public class GroupManager {
@@ -15,6 +16,8 @@ public class GroupManager {
     private GraphicsGroup laserGroup;
     private List<Laser> enemyLaserList;
     private GraphicsGroup enemyLaserGroup;
+    private Image explosion = new Image("ship-icons/explosion.png");
+
 
     /*
      * Constructs a brick manager for the specified window object.
@@ -59,9 +62,17 @@ public class GroupManager {
         return canvas;
     }
 
+    public Image getExplosion() {
+        return explosion;
+    }
+
     public void removePlayerLaser(Laser laser) {
         laserGroup.remove(laser.getLaserImage());
         laserList.remove(laser);
+    }
+
+    public void removePlayerShip(PlayerShip playerShip) {
+        canvas.remove(playerShip.getPlayerShipImage());
     }
 
     public void removeEnemyLaser(Laser laser) {

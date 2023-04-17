@@ -44,7 +44,7 @@ public class SpaceshipGame {
     private Random random;
 
     public SpaceshipGame() {
-        canvas = new CanvasWindow("Breakout!", CANVAS_WIDTH, CANVAS_HEIGHT);
+        canvas = new CanvasWindow("Babylon-5", CANVAS_WIDTH, CANVAS_HEIGHT);
         imageBack = new Image(CANVAS_WIDTH,CANVAS_HEIGHT);
         
 
@@ -56,11 +56,6 @@ public class SpaceshipGame {
 
         //Text that displays the current score
         scoreDisplay = new GraphicsText();
-
-        //Score Text
-        //scoreDisplay.setFont(FontStyle.BOLD,50);
-        //scoreDisplay.setPosition(50,50); //placeholder for right now
-        //scoreDisplay.setText("Current Score:");
 
         // Text that displays the number of lives the user currently has.
         livesDisplay = new GraphicsText();
@@ -116,17 +111,8 @@ public class SpaceshipGame {
         canvas.animate(()->{
             if(!pause){
                 enemyShipMovementAndCollision();
-                for (Laser laser : groupManager.getLaserList()) {
-                    if (!(laser.getY() < -200 || laser.getY() > CANVAS_HEIGHT + 50)) {
-                        laser.moveLaser();
-                    } else {
-                        oldLaser = laser;
-                    }
-                }
-                if (oldLaser != null) {
-                    groupManager.removePlayerLaser(oldLaser);
-                    oldLaser = null;
-                }
+                playerShipCollision();
+                laserBounds();
                 for (Laser laser : groupManager.getEnemyLaserList()) {
                     if (!(laser.getY() < -50 || laser.getY() > CANVAS_HEIGHT + 50)) {
                         laser.moveLaser();
@@ -140,13 +126,15 @@ public class SpaceshipGame {
                 }
             }
         });
+
         mouseControl();
         keyControl();
     }
     
     /**
      * Handles enemy ships' movement and the laser collison with the enemy ships. It also updates the
-     * current score every time an enemy ship is removed from the canvas.
+     * current score every time an enemy ship is removed from the canvas, and it keeps track of how many times
+     * the ships have moved and uses that number to time when they fire lasers.
      */
     private void enemyShipMovementAndCollision() {
         for (EnemyShip enemyShip : groupManager.getEnemyShipList()){
@@ -160,12 +148,48 @@ public class SpaceshipGame {
                 createLaser(enemyShip.getPosition().getX(), enemyShip.getPosition().getY() + 40, 10, -90, 0);
             }
         } 
-        if (selectedEnemyShip != null) {
+        updateCurrentScore();
+    }
+    
+    /**
+     * Updates current score by 10 every time an enemy ship is destroyed
+     */
+    private void updateCurrentScore(){
+         if (selectedEnemyShip != null) {
             groupManager.removeEnemyShip(selectedEnemyShip);
             currentScore += 10;
             scoreDisplay.setText("Score: " + currentScore);
             canvas.add(scoreDisplay);
             selectedEnemyShip = null;
+        }
+    }
+
+    /**
+    *
+    */
+    private void playerShipCollision() {
+        if (playerShip.checkLaserCollision(groupManager)) {
+            groupManager.removePlayerShip(playerShip);
+            // if (movementCounter == 50) {
+            //     groupManager.getCanvas().remove(groupManager.getExplosion());
+            // }
+        }
+    }
+
+    /** 
+     * Check laser bounds and removes it from the canvas if it goes out of bounds
+     */
+    private void laserBounds(){
+        for (Laser laser : groupManager.getLaserList()) {
+            if (!(laser.getY() < -200 || laser.getY() > CANVAS_HEIGHT + 50)) {
+                laser.moveLaser();
+            } else {
+                oldLaser = laser;
+            }
+        }  
+        if (oldLaser != null) {
+            groupManager.removePlayerLaser(oldLaser);
+            oldLaser = null;
         }
     }
     
@@ -193,7 +217,6 @@ public class SpaceshipGame {
                 }
             }         
         });
-
     }
 
     public static void main(String[] args){
@@ -207,7 +230,7 @@ public class SpaceshipGame {
      */
     private void continueGame() {
         if (currentLives > 1) {
-            canvas.remove(playerShip.getPlayerIcon());
+            canvas.remove(playerShip.getPlayerShipImage());
             currentLives --;;
             outOfBounds = false;
             createGame();
@@ -272,7 +295,7 @@ public class SpaceshipGame {
      */
     public void createPlayerShip(double upperLeftX, double upperLeftY, double scale) {
         playerShip = new PlayerShip(upperLeftX, upperLeftY, scale);
-        canvas.add(playerShip.getPlayerIcon());
+        canvas.add(playerShip.getPlayerShipImage());
     }
 
     public void createEnemyShip(double upperLeftX, double upperLeftY, double scale, double angle, double speed){
@@ -284,8 +307,6 @@ public class SpaceshipGame {
         }
         canvas.add(groupManager.getEnemyShipGroup());
     }
-
-   
 
     /**
      * Resets the canvas by removing everything on the canvas and all the bricks that had been created.
@@ -319,8 +340,8 @@ public class SpaceshipGame {
         livesDisplay.setText("Lives: " + currentLives);
         scoreDisplay.setText("Score: " + currentScore);
         canvas.add(scoreDisplay);
-        createPlayerShip(220,600, 0.2);
-        createEnemyShip(220, 100, 0.170,50,70);
+        createPlayerShip(220, 600, 0.2);
+        createEnemyShip(220, 100, 0.170, 50, 70);
         canvas.draw();
         canvas.pause(100);
     }

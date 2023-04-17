@@ -10,7 +10,6 @@ public class EnemyShip {
     private double speed, randomAngle, currentXVelocity, currentYVelocity;
     private Random rand = new Random();
     private static final int SPEED = 4;
-    // private Image explosion = new Image("ship-icons/explosion.png");
 
     private GraphicsObject element;
 
@@ -20,12 +19,12 @@ public class EnemyShip {
     private double originalX, originalY;
     private double centerX, centerY;
 
-    public EnemyShip(double centerX, double centerY, double scale) {
+    public EnemyShip(double centerX, double centerY, double enemyScale) {
         this.centerX = centerX;
         this.centerY = centerY;
         enemyShipIcon.setImagePath("ship-icons/enemyShip.png");
         enemyShipIcon.setCenter(centerX, centerY);
-        enemyShipIcon.setScale(scale);
+        enemyShipIcon.setScale(enemyScale);
         enemyShipIcon.rotateBy(150);
         setAngleAndVelocity();
         originalX = centerX;
@@ -60,8 +59,6 @@ public class EnemyShip {
         }
     }
 
-
-
     /**
      * Removes enemy ship from canvas and adds explosion when laser hits enemy's ship
      * @param canvas
@@ -69,13 +66,10 @@ public class EnemyShip {
      */
    public boolean checkLaserCollision(GroupManager groupManager) {
         GraphicsObject element = checkCollisionPoints(groupManager);
-
-        // System.out.println(element);
         for (Laser laser : groupManager.getLaserList()) {
             if (element == laser.getLaserImage()) {
                 selectedLaser = laser;
                 selectedEnemyShip = this;
-                // explosion.setCenter(centerX, centerY);
             }
         }
         if (selectedLaser != null) {
@@ -83,7 +77,10 @@ public class EnemyShip {
             selectedLaser = null;
             decreaseCurrentHealth();
             if (currentHealth == 0) {
-            return true;
+                groupManager.getExplosion().setScale(0.2);
+                groupManager.getExplosion().setCenter(centerX, centerY);
+                groupManager.getCanvas().add(groupManager.getExplosion());
+                return true;
             }
         }
 
