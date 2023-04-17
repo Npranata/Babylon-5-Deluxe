@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 
-public class Boss extends Ship {
+public class Boss {
     private Image bossShapeIcon = new Image(0,0);
     private double speed,randomAngle,currentXVelocity,currentYVelocity;
     private Random rand = new Random();
@@ -24,7 +24,7 @@ public class Boss extends Ship {
 
 
 public Boss(double upperLeftX, double upperLeftY, double scale, double randomAngle, double speed) {
-    super(upperLeftX, upperLeftY, scale);  
+    
     //bossShipIcon.setImagePath("ship-icons/bossShip.png");
     
 }

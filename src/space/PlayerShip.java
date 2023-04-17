@@ -6,8 +6,9 @@ import edu.macalester.graphics.*;
  * Represents the paddle the user uses to bounce the ball upward toward the bricks. The user can use the mouse to move the
  * paddle to the right and left at the same y-level along the lower region of the canvas.
  */
-public class PlayerShip extends Ship {
-
+public class PlayerShip {
+    this.centerX = centerX;
+    this.centerY = centerY;
     private Image playerShipIcon = new Image(0,0);
     private double centerX, centerY, scale;
 
@@ -16,7 +17,7 @@ public class PlayerShip extends Ship {
      * width = paddleWidth, and height = paddleHeight.
      */
     public PlayerShip(double centerX, double centerY, double scale) {
-        super(centerX, centerY, scale);
+        
         playerShipIcon.setImagePath("ship-icons/playerShip.png");
         playerShipIcon.setCenter(centerX, centerY);
         playerShipIcon.setScale(scale);

@@ -35,10 +35,6 @@ public class SpaceshipGame {
     private Random rand = new Random();
     private int movementCounter = 0;
    
-
-
-    private Border rightBorder, leftBorder, topBorder;
-
     private int HP, currentHP, lives, currentLives,currentScore;
 
     private double initialSpeed = 50;
@@ -179,8 +175,8 @@ public class SpaceshipGame {
     private void mouseControl(){
         canvas.onMouseMove(mousePosition -> {
             if (!pause) {
-                if (mousePosition.getPosition().getX() > leftBorder.getBorderWidth() + leftBorder.getBorderX() &&
-                mousePosition.getPosition().getX() < rightBorder.getBorderX()) {
+                if (mousePosition.getPosition().getX() > 0 &&
+                mousePosition.getPosition().getX() < CANVAS_WIDTH) {
                     playerShip.setLocation(mousePosition.getPosition());
                 }
             }
@@ -309,7 +305,6 @@ public class SpaceshipGame {
      */
     private void createGame() {
         if (currentLives == 2) {
-            createBounds();
             livesDisplay.setFont(FontStyle.BOLD, 20);
             livesDisplay.setPosition(15,30);
             canvas.add(livesDisplay);
@@ -328,19 +323,6 @@ public class SpaceshipGame {
         createEnemyShip(220, 100, 0.170,50,70);
         canvas.draw();
         canvas.pause(100);
-    }
-
-    /**
-     * Creates three border objects along the left, top, and right sides of the play zone to keep the ball
-     * from leaving the canvas.
-     */
-    private void createBounds() {
-        rightBorder = new Border(CANVAS_WIDTH-8.5, 4, 6.5, CANVAS_HEIGHT);
-        rightBorder.addToCanvas(canvas);
-        leftBorder = new Border(2, 4, 6, CANVAS_HEIGHT);
-        leftBorder.addToCanvas(canvas);
-        topBorder = new Border(6, 4, CANVAS_WIDTH-10, 8);
-        topBorder.addToCanvas(canvas);
     }
 
     /**
