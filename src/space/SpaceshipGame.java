@@ -30,7 +30,7 @@ public class SpaceshipGame {
  
     private Laser laser;
     private Laser oldLaser;
-    // private List<Laser> oldLasers = new ArrayList<>();
+    private List<Laser> oldLasers;
     private PlayerShip playerShip;
     private Image imageBack;
     private EnemyShip enemyShip;
@@ -48,8 +48,7 @@ public class SpaceshipGame {
 
     public SpaceshipGame() {
         canvas = new CanvasWindow("Babylon-5", CANVAS_WIDTH, CANVAS_HEIGHT);
-        imageBack = new Image(CANVAS_WIDTH,CANVAS_HEIGHT);
-        
+        imageBack = new Image(CANVAS_WIDTH,CANVAS_HEIGHT);        
 
         lives = 2; // Stores the total number of lives the user has each round.
         currentLives = 2; // Stores the number of lives the user has at the moment.
@@ -115,27 +114,10 @@ public class SpaceshipGame {
             if(!pause){
                 enemyShipMovementAndCollision();
                 playerShipCollision();
-                laserBounds();
-                for (Laser laser : groupManager.getEnemyLaserList()) {
-                    if (!(laser.getY() < -50 || laser.getY() > CANVAS_HEIGHT + 50)) {
-                        laser.moveLaser();
-                    } else {
-                        oldLaser = laser;
-                        // oldLasers.add(laser);
-                    }
-                }
-                if (oldLaser != null) {
-                    groupManager.removeEnemyLaser(oldLaser);
-                    oldLaser = null;
-                }
-                // if (oldLasers != null) {
-                //     for (Laser laser : oldLasers) {
-                //         groupManager.removeEnemyLaser(oldLaser);
-                //     }
-                //     oldLasers = null;
-                }
+                laserBounds(groupManager.getLaserList());
+                laserBounds(groupManager.getEnemyLaserList());
             }
-        );
+        });
 
         mouseControl();
         keyControl();
@@ -189,17 +171,24 @@ public class SpaceshipGame {
     /** 
      * Check laser bounds and removes it from the canvas if it goes out of bounds
      */
-    private void laserBounds(){
-        for (Laser laser : groupManager.getLaserList()) {
-            if (!(laser.getY() < -200 || laser.getY() > CANVAS_HEIGHT + 50)) {
+    private void laserBounds(List<Laser> currentLaserList) {
+        oldLasers = new ArrayList<>();
+        for (Laser laser : currentLaserList) {
+            if (!(laser.getY() < -50 || laser.getY() > CANVAS_HEIGHT + 50)) {
                 laser.moveLaser();
             } else {
-                oldLaser = laser;
+                oldLasers.add(laser);
             }
         }  
-        if (oldLaser != null) {
-            groupManager.removePlayerLaser(oldLaser);
-            oldLaser = null;
+        if (oldLasers != null) {
+            for (Laser laser : oldLasers) {
+                if (currentLaserList == groupManager.getLaserList()) {
+                    groupManager.removePlayerLaser(laser);
+                } else {
+                    groupManager.removeEnemyLaser(laser);
+                }
+            }
+            oldLasers = null;        
         }
     }
     
