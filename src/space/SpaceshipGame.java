@@ -5,6 +5,8 @@ import edu.macalester.graphics.*;
 import edu.macalester.graphics.events.Key;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -28,6 +30,7 @@ public class SpaceshipGame {
  
     private Laser laser;
     private Laser oldLaser;
+    private List<Laser> oldLasers = new ArrayList<>();
     private PlayerShip playerShip;
     private Image imageBack;
     private EnemyShip enemyShip;
@@ -117,12 +120,14 @@ public class SpaceshipGame {
                     if (!(laser.getY() < -50 || laser.getY() > CANVAS_HEIGHT + 50)) {
                         laser.moveLaser();
                     } else {
-                        oldLaser = laser;
+                        oldLasers.add(laser);
                     }
                 }
-                if (oldLaser != null) {
-                    groupManager.removeEnemyLaser(oldLaser);
-                    oldLaser = null;
+                if (oldLasers != null) {
+                    for (Laser laser : oldLasers) {
+                        groupManager.removeEnemyLaser(oldLaser);
+                    }
+                    oldLasers = null;
                 }
             }
         });
