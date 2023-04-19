@@ -30,7 +30,7 @@ public class SpaceshipGame {
  
     private Laser laser;
     private Laser oldLaser;
-    private List<Laser> oldLasers = new ArrayList<>();
+    // private List<Laser> oldLasers = new ArrayList<>();
     private PlayerShip playerShip;
     private Image imageBack;
     private EnemyShip enemyShip;
@@ -38,7 +38,7 @@ public class SpaceshipGame {
     private Random rand = new Random();
     private int movementCounter = 0;
    
-    private int HP, currentHP, lives, currentLives,currentScore;
+    private int HP, currentHP, lives, currentLives, currentScore;
 
     private double initialSpeed = 50;
 
@@ -120,17 +120,22 @@ public class SpaceshipGame {
                     if (!(laser.getY() < -50 || laser.getY() > CANVAS_HEIGHT + 50)) {
                         laser.moveLaser();
                     } else {
-                        oldLasers.add(laser);
+                        oldLaser = laser;
+                        // oldLasers.add(laser);
                     }
                 }
-                if (oldLasers != null) {
-                    for (Laser laser : oldLasers) {
-                        groupManager.removeEnemyLaser(oldLaser);
-                    }
-                    oldLasers = null;
+                if (oldLaser != null) {
+                    groupManager.removeEnemyLaser(oldLaser);
+                    oldLaser = null;
+                }
+                // if (oldLasers != null) {
+                //     for (Laser laser : oldLasers) {
+                //         groupManager.removeEnemyLaser(oldLaser);
+                //     }
+                //     oldLasers = null;
                 }
             }
-        });
+        );
 
         mouseControl();
         keyControl();
