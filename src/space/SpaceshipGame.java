@@ -29,14 +29,14 @@ public class SpaceshipGame {
     private GroupManager groupManager;
  
     private Laser laser;
-    private Laser oldLaser;
     private List<Laser> oldLasers;
     private PlayerShip playerShip;
     private Image imageBack;
     private EnemyShip enemyShip;
     private EnemyShip selectedEnemyShip;
     private Random rand = new Random();
-    private int movementCounter = 0;
+    private int movementCounter = 0; // Used for timing the enemy laser shots
+    private int playerCounter = 0; // Used for timing the player laser shots
    
     private int HP, currentHP, lives, currentLives, currentScore;
 
@@ -55,7 +55,9 @@ public class SpaceshipGame {
         currentScore = 0;
         HP = 100;
         currentHP = 100;
-
+        //Text that displays current Health
+        lifeDisplay = new GraphicsText();
+        
         //Text that displays the current score
         scoreDisplay = new GraphicsText();
 
@@ -138,6 +140,7 @@ public class SpaceshipGame {
             if (movementCounter == 111) {
                 movementCounter = 0;
                 createLaser(enemyShip.getPosition().getX(), enemyShip.getPosition().getY() + 40, 10, -90, 0);
+                updateCurrentHealth();
             }
         } 
         updateCurrentScore();
@@ -151,9 +154,13 @@ public class SpaceshipGame {
             groupManager.removeEnemyShip(selectedEnemyShip);
             currentScore += 10;
             scoreDisplay.setText("Score: " + currentScore);
-            canvas.add(scoreDisplay);
             selectedEnemyShip = null;
         }
+    }
+
+    private void updateCurrentHealth() {
+        int currentHP = playerShip.getPlayerHealth();
+        lifeDisplay.setText("Health: " + currentHP);
     }
 
     /**
@@ -162,6 +169,8 @@ public class SpaceshipGame {
     private void playerShipCollision() {
         if (playerShip.checkLaserCollision(groupManager)) {
             groupManager.removePlayerShip(playerShip);
+            
+            
             // if (movementCounter == 50) {
             //     groupManager.getCanvas().remove(groupManager.getExplosion());
             // }
@@ -206,13 +215,25 @@ public class SpaceshipGame {
         });
     }
     /**
-     * Makes laser shoot out of the player's ship when the player presses the space bar 
+     * Makes a laser shoot out of the player's ship when the player presses the space bar. In order to both enable the
+     * player to shoot continuously by holding the button and with individual shots with a single button press, every other
+     * shot is a double laser shot. 
      */
     private void keyControl(){
-        canvas.onKeyDown(key -> {
+        canvas.onKeyUp(key -> {
             if (key.getKey() == Key.SPACE) {
                 if (!pause) {
                     createLaser(playerShip.getPosition().getX(), playerShip.getPosition().getY() - 20, 10, 90, 1);
+                }
+            }
+        });
+        
+        canvas.onKeyDown(key -> {
+            if (key.getKey() == Key.SPACE) {
+                playerCounter += 1;
+                if (!pause && playerCounter == 2) {
+                    createLaser(playerShip.getPosition().getX(), playerShip.getPosition().getY() - 20, 10, 90, 1);
+                    playerCounter = 0;
                 }
             }         
         });
@@ -262,7 +283,7 @@ public class SpaceshipGame {
         gameOver = false;
         wonGame = false;
         currentLives = 2;
-        currentHP = 100;
+        // currentHP = 100;
     }
     
     /**
@@ -335,10 +356,14 @@ public class SpaceshipGame {
             scoreDisplay.setFont(FontStyle.BOLD,30);
             scoreDisplay.setFillColor(Color.WHITE);
             scoreDisplay.setPosition(15,50);
+            lifeDisplay.setFont(FontStyle.BOLD,30);
+            lifeDisplay.setFillColor(Color.WHITE);
+            lifeDisplay.setPosition(200,50);
         }
         livesDisplay.setText("Lives: " + currentLives);
         scoreDisplay.setText("Score: " + currentScore);
         canvas.add(scoreDisplay);
+        canvas.add(lifeDisplay);
         createPlayerShip(220, 600, 0.2);
         createEnemyShip(220, 100, 0.170, 50, 70);
         canvas.draw();

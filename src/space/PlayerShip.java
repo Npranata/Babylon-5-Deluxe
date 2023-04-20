@@ -66,6 +66,10 @@ public class PlayerShip {
         return playerShipIcon;
     }
 
+    public int getPlayerHealth() {
+        return currentHealth;
+    }
+
     private GraphicsObject checkCollisionPoints(GroupManager groupManager) {
         double shipCenterX = playerShipIcon.getCenter().getX();
         double shipCenterY = playerShipIcon.getCenter().getY();

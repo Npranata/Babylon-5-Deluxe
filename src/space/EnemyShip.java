@@ -14,7 +14,7 @@ public class EnemyShip {
     private GraphicsObject element;
 
     private Laser selectedLaser; 
-    private int currentHealth = 100;
+    private int currentHealth = 50;
     private EnemyShip selectedEnemyShip;
     private double originalX, originalY;
     private double centerX, centerY;
@@ -76,7 +76,7 @@ public class EnemyShip {
             groupManager.removePlayerLaser(selectedLaser);
             selectedLaser = null;
             decreaseCurrentHealth();
-            if (currentHealth == 0) {
+            if (currentHealth <= 0) {
                 groupManager.getExplosion().setScale(0.2);
                 groupManager.getExplosion().setCenter(centerX, centerY);
                 groupManager.getCanvas().add(groupManager.getExplosion());
