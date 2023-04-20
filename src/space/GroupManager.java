@@ -95,6 +95,10 @@ public class GroupManager {
         enemyList.add(enemyShip);
     }
 
+    public void addBossShip(Boss boss){
+        canvas.add(boss.getBossIcon());
+    }
+
     public void removeEnemyShip(EnemyShip enemyShip) {
         enemyGroup.remove(enemyShip.getEnemyShipImage());
         enemyList.remove(enemyShip);

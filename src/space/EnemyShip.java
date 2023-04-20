@@ -83,7 +83,6 @@ public class EnemyShip {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -115,7 +114,7 @@ public class EnemyShip {
 
         return element;
     }
-
+    
 
     public String toString() {
         return "An enemy ship with center at " 

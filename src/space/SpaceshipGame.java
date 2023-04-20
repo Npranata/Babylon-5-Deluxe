@@ -33,6 +33,7 @@ public class SpaceshipGame {
     private PlayerShip playerShip;
     private Image imageBack;
     private EnemyShip enemyShip;
+    private Boss bossShip;
     private EnemyShip selectedEnemyShip;
     private Random rand = new Random();
     private int movementCounter = 0; // Used for timing the enemy laser shots
@@ -114,23 +115,31 @@ public class SpaceshipGame {
 
         canvas.animate(()->{
             if(!pause){
-                enemyShipMovementAndCollision();
+                if (currentScore < 200) {
+                    enemyShipMovementAndLasers();
+                } else {
+                    createBossShip(100, 100);
+                    bossShipCollision();
+                }
                 playerShipCollision();
                 laserBounds(groupManager.getLaserList());
                 laserBounds(groupManager.getEnemyLaserList());
             }
         });
-
         mouseControl();
         keyControl();
     }
     
+    private void bossShipCollision() {
+
+    }
+
     /**
      * Handles enemy ships' movement and the laser collison with the enemy ships. It also updates the
      * current score every time an enemy ship is removed from the canvas, and it keeps track of how many times
      * the ships have moved and uses that number to time when they fire lasers.
      */
-    private void enemyShipMovementAndCollision() {
+    private void enemyShipMovementAndLasers() {
         for (EnemyShip enemyShip : groupManager.getEnemyShipList()){
             enemyShip.moveEnemyShip(canvas);
             movementCounter ++;
@@ -328,6 +337,11 @@ public class SpaceshipGame {
         canvas.add(groupManager.getEnemyShipGroup());
     }
 
+    public void createBossShip(double centerX, double centerY) {
+        bossShip = new Boss(centerX, centerY, 2);
+        
+    }
+
     /**
      * Resets the canvas by removing everything on the canvas and all the bricks that had been created.
      * Then creates the game components for a new round and allows the game to run.
@@ -365,7 +379,7 @@ public class SpaceshipGame {
         canvas.add(scoreDisplay);
         canvas.add(lifeDisplay);
         createPlayerShip(220, 600, 0.2);
-        createEnemyShip(220, 100, 0.170, 50, 70);
+        createEnemyShip(220, 100, 0.17, 50, 70);
         canvas.draw();
         canvas.pause(100);
     }
@@ -375,21 +389,6 @@ public class SpaceshipGame {
      */
     public double randomDouble(double min, double max) {
         return random.nextDouble() * (max - min) + min;
-    }
-
-    /**
-     * Uses the randomDouble() method to create an angle for the ball to move in at the start of each round.
-     * 
-     * @return A double at an acceptable angle such that the ball moves down toward the paddle at a more horizontal
-     * than vertical angle.
-     */
-    private double getBallAngle() {
-        random = new Random();
-        if (randomDouble(0, 1) > 0.5) {
-            return randomDouble(-115, -110);
-        } else {
-            return randomDouble(-70, -60);
-        }
     }
 
     @Override
