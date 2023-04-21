@@ -115,14 +115,15 @@ public class SpaceshipGame {
         canvas.animate(() -> {
             if(!pause){
                 if (!bossTime) {
-                    if (currentScore < 200) {
+                    if (groupManager.enemiesExist()) {
                         enemyShipMovementAndLasers();
                     } else {
                         bossTime = true;
-                        createBossShip(CANVAS_WIDTH/2, 30);
+                        createBossShip(CANVAS_WIDTH/2, -500);
                     }
                 }
                 if (bossTime && !gameOver) {
+                    bossShip.moveBoss();
                     bossShipCollision();
                 }
                 playerShipCollision();
@@ -158,9 +159,9 @@ public class SpaceshipGame {
             if (movementCounter == 111) {
                 movementCounter = 0;
                 createLaser(enemyShip.getPosition().getX(), enemyShip.getPosition().getY() + 40, 10, -90, 0);
-                updateCurrentHealth();
             }
         } 
+        updateCurrentHealth();
         updateCurrentScore();
     }
     
@@ -175,7 +176,7 @@ public class SpaceshipGame {
             selectedEnemyShip = null;
         } else if (selectedBossShip != null) {
             groupManager.getCanvas().remove(bossShip.getBossIcon());
-            currentScore += 50;
+            currentScore += 150;
             selectedBossShip = null;
         }
         scoreDisplay.setText("Score: " + currentScore);
@@ -337,10 +338,10 @@ public class SpaceshipGame {
     }
 
     public void createEnemyShip(double upperLeftX, double upperLeftY, double scale, double angle, double speed){
-        for (int i = 0; i < 5; i++){
-            for (int j = -400; j < 0; j += 100) {
-            enemyShip = new EnemyShip(i * 30, j, scale);
-            groupManager.addEnemyShip(enemyShip);
+        for (int i = 0; i < .01; i++){ //was i <5
+            for (int j = -400; j < 0; j += 100) { //was j<0
+                enemyShip = new EnemyShip(i * 15, j, scale);
+                groupManager.addEnemyShip(enemyShip);
             }
         }
         canvas.add(groupManager.getEnemyShipGroup());

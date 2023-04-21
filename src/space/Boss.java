@@ -10,22 +10,22 @@ import java.util.ArrayList;
 
 public class Boss {
     private Image bossShipIcon = new Image(0,0);
-    private double speed,randomAngle,currentXVelocity,currentYVelocity;
+    private final double Y_VELOCITY = 1;
     private Random rand = new Random();
-    private static final int SPEED = 4;
     private Image explosion = new Image("ship-icons/explosion.png");
     private GraphicsObject element;
 
     private Laser selectedLaser; 
     private EnemyShip selectedEnemyShip;
-    private double originalX, originalY;
-    private double centerX, centerY;
-    private int bossHealth =200;
+    private double originalX, originalY, centerX, centerY;
+    private int bossHealth = 1000;
 
 
 public Boss(double centerX, double centerY, double scale) {
     this.centerX = centerX;
     this.centerY = centerY;
+    this.originalX = centerX;
+    this.originalY = centerY;
     bossShipIcon.setImagePath("ship-icons/bossShip.png");
     bossShipIcon.setScale(scale);
     bossShipIcon.setCenter(centerX, centerY);
@@ -38,6 +38,18 @@ public Image getBossIcon(){
 
 public Point getBossPosition(){
     return bossShipIcon.getCenter();
+}
+
+/**
+* Moves the boss according to current dx and dy
+*/
+public void moveBoss(){
+    if (centerY == 30) {
+        return;
+    }
+    bossShipIcon.moveBy(0, Y_VELOCITY);
+    centerX = bossShipIcon.getCenter().getX();
+    centerY = bossShipIcon.getCenter().getY();
 }
 
 /**
@@ -73,23 +85,18 @@ public Point getBossPosition(){
     private GraphicsObject checkCollisionPoints(GroupManager groupManager) {
         double shipCenterX = bossShipIcon.getCenter().getX();
         double shipCenterY = bossShipIcon.getCenter().getY();
-        double shipRightX = shipCenterX + 10;
-        double shipLowerY = shipCenterY + 10;
-        double shipLeftX = shipCenterX - 10;
-        double shipUpperY = shipCenterY - 10;
 
-        element = groupManager.getLaserGroup().getElementAt(shipCenterX, shipCenterY);
+        double shipRightX = shipCenterX + 30;
+        double shipLeftX = shipCenterX - 30;
+        double shipSideY = shipCenterY + 100;
+
+        element = groupManager.getLaserGroup().getElementAt(shipCenterX, shipCenterY + 100);
+
         if (element == null) {
-            element = groupManager.getLaserGroup().getElementAt(shipCenterX, shipLowerY);
+            element = groupManager.getLaserGroup().getElementAt(shipRightX, shipSideY);
         }
         if (element == null) {
-            element = groupManager.getLaserGroup().getElementAt(shipRightX, shipCenterY);
-        }
-        if (element == null) {
-            element = groupManager.getLaserGroup().getElementAt(shipLeftX, shipCenterY);
-        }
-        if (element == null) {
-            element = groupManager.getLaserGroup().getElementAt(shipCenterX, shipUpperY);
+            element = groupManager.getLaserGroup().getElementAt(shipLeftX, shipSideY);
         }
 
         return element;

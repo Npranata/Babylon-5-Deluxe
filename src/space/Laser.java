@@ -72,17 +72,6 @@ public class Laser {
     }
 
     /**
-     * Update the ball's position every time the canvas updates in canvas.update.
-     * @param dt The amount that the ball's x and y position change each time the canvas updates.
-     */
-    public void updatePosition(double dt) {  
-        // Calculate new x and y coordinates by adding the x and y velocities times dt to the current coordinates.
-        double newX = getX() + (currentXVelocity * dt);
-        double newY = getY() + (currentYVelocity * dt);
-        laserImage.setPosition(newX, newY);
-    }
-
-    /**
      * Loops through the bricks that have yet to be destroyed by the ball and identifies whether the ball
      * is intersecting with one of the bricks.
      * Breaks the intersecting element is it is a brick.
@@ -167,7 +156,7 @@ public class Laser {
     }
 
     /**
-     * Moves the enemy's spaceship according to current dx and dy
+     * Moves the laser according to current dx and dy
      */
     public void moveLaser(){
         laserImage.moveBy(currentXVelocity, currentYVelocity);

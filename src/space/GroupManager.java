@@ -104,6 +104,14 @@ public class GroupManager {
         enemyList.remove(enemyShip);
     }
 
+    public boolean enemiesExist() {
+        if (enemyList.size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Removes all the lasers and enemyships stored in lists and GraphicsGroups.
      */
