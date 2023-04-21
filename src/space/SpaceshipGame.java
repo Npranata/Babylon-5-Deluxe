@@ -32,9 +32,8 @@ public class SpaceshipGame {
     private List<Laser> oldLasers;
     private PlayerShip playerShip;
     private Image imageBack;
-    private EnemyShip enemyShip;
-    private Boss bossShip;
-    private EnemyShip selectedEnemyShip;
+    private EnemyShip enemyShip, selectedEnemyShip;
+    private Boss bossShip, selectedBossShip;
     private Random rand = new Random();
     private int movementCounter = 0; // Used for timing the enemy laser shots
     private int playerCounter = 0; // Used for timing the player laser shots
@@ -43,7 +42,7 @@ public class SpaceshipGame {
 
     private double initialSpeed = 50;
 
-    private boolean outOfBounds, gameOver, pause = true, wonGame = false;
+    private boolean outOfBounds, gameOver, pause = true, wonGame = false, bossTime = false;
 
     private Random random;
 
@@ -113,12 +112,17 @@ public class SpaceshipGame {
          * ball is meant to be moving.
          */
 
-        canvas.animate(()->{
+        canvas.animate(() -> {
             if(!pause){
-                if (currentScore < 200) {
-                    enemyShipMovementAndLasers();
-                } else {
-                    createBossShip(100, 100);
+                if (!bossTime) {
+                    if (currentScore < 200) {
+                        enemyShipMovementAndLasers();
+                    } else {
+                        bossTime = true;
+                        createBossShip(CANVAS_WIDTH/2, 30);
+                    }
+                }
+                if (bossTime && !gameOver) {
                     bossShipCollision();
                 }
                 playerShipCollision();
@@ -131,7 +135,12 @@ public class SpaceshipGame {
     }
     
     private void bossShipCollision() {
-
+        if (bossShip.checkLaserCollision(groupManager)) {
+            selectedBossShip = bossShip;
+            gameOver = true;
+        }
+        updateCurrentHealth();
+        updateCurrentScore();
     }
 
     /**
@@ -156,15 +165,20 @@ public class SpaceshipGame {
     }
     
     /**
-     * Updates current score by 10 every time an enemy ship is destroyed
+     * Updates current score every time an enemy ship is destroyed, differentiating between destroying
+     * normal enemy ships and boss ships.
      */
     private void updateCurrentScore(){
-         if (selectedEnemyShip != null) {
+        if (selectedEnemyShip != null) {
             groupManager.removeEnemyShip(selectedEnemyShip);
             currentScore += 10;
-            scoreDisplay.setText("Score: " + currentScore);
             selectedEnemyShip = null;
+        } else if (selectedBossShip != null) {
+            groupManager.getCanvas().remove(bossShip.getBossIcon());
+            currentScore += 50;
+            selectedBossShip = null;
         }
+        scoreDisplay.setText("Score: " + currentScore);
     }
 
     private void updateCurrentHealth() {
@@ -294,11 +308,6 @@ public class SpaceshipGame {
         currentLives = 2;
         // currentHP = 100;
     }
-    
-    /**
-     * Keeps track of the score depending on how many enemy ships have been destroyed
-     */
-    
 
     /**
      * Creates a laser on the canvas by calling the constructor in the Laser class.
@@ -339,8 +348,7 @@ public class SpaceshipGame {
 
     public void createBossShip(double centerX, double centerY) {
         bossShip = new Boss(centerX, centerY, 2);
-        groupManager.addBossShip(bossShip);
-        
+        canvas.add(bossShip.getBossIcon());
     }
 
     /**
@@ -370,10 +378,10 @@ public class SpaceshipGame {
             canvas.add(imageBack);
             scoreDisplay.setFont(FontStyle.BOLD,30);
             scoreDisplay.setFillColor(Color.WHITE);
-            scoreDisplay.setPosition(15,50);
+            scoreDisplay.setPosition(15,CANVAS_HEIGHT - 20);
             lifeDisplay.setFont(FontStyle.BOLD,30);
             lifeDisplay.setFillColor(Color.WHITE);
-            lifeDisplay.setPosition(200,50);
+            lifeDisplay.setPosition(200,CANVAS_HEIGHT - 20);
         }
         livesDisplay.setText("Lives: " + currentLives);
         scoreDisplay.setText("Score: " + currentScore);
@@ -381,7 +389,6 @@ public class SpaceshipGame {
         canvas.add(lifeDisplay);
         createPlayerShip(220, 600, 0.2);
         createEnemyShip(220, 100, 0.17, 50, 70);
-        //createBossShip(100, 100);
         canvas.draw();
         canvas.pause(100);
     }

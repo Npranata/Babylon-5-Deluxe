@@ -21,8 +21,6 @@ public class Boss {
     private double originalX, originalY;
     private double centerX, centerY;
     private int bossHealth =200;
-    
-
 
 
 public Boss(double centerX, double centerY, double scale) {
