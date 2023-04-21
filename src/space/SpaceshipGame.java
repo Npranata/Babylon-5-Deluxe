@@ -339,6 +339,7 @@ public class SpaceshipGame {
 
     public void createBossShip(double centerX, double centerY) {
         bossShip = new Boss(centerX, centerY, 2);
+        groupManager.addBossShip(bossShip);
         
     }
 
@@ -380,6 +381,7 @@ public class SpaceshipGame {
         canvas.add(lifeDisplay);
         createPlayerShip(220, 600, 0.2);
         createEnemyShip(220, 100, 0.17, 50, 70);
+        //createBossShip(100, 100);
         canvas.draw();
         canvas.pause(100);
     }
