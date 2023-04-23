@@ -81,14 +81,20 @@ public class SpaceshipGame {
         // Text that appears on the canvas before the game starts.
         startGameText = new GraphicsText();
         startGameText.setFont(FontStyle.BOLD, 50);
-        startGameText.setPosition(CANVAS_WIDTH/2 - 150,CANVAS_HEIGHT/2 - 50);
+        startGameText.setPosition(CANVAS_WIDTH/2 - 150, 150);
         startGameText.setText("BABYLON 5");
 
         groupManager = new GroupManager(canvas);
 
         // Button that the user presses to start the game.
         startButton = new Button("START");
+        startButton.setScale(50);
         startButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2);
+        
+        // MenuButton menuButton = new MenuButton(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2 + 100, 1);
+        // canvas.add(menuButton.getMenuButtonImage());
+        // menuButton.onClick()
+        
         
         // Button that the user presses to restart the game after a win or loss.
         restartButton = new Button("RESTART");

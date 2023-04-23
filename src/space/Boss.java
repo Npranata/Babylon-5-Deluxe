@@ -18,7 +18,7 @@ public class Boss {
     private Laser selectedLaser; 
     private EnemyShip selectedEnemyShip;
     private double originalX, originalY, centerX, centerY;
-    private int bossHealth = 20;
+    private int bossHealth = 50;
 
 
     public Boss(double centerX, double centerY, double scale) {
