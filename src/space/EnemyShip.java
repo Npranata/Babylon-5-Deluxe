@@ -35,8 +35,12 @@ public class EnemyShip {
         return enemyShipIcon;
     }
 
-    public Point getPosition() {
-        return enemyShipIcon.getCenter();
+    public double getEnemyX() {
+        return enemyShipIcon.getCenter().getX();
+    }
+
+    public double getEnemyY() {
+        return enemyShipIcon.getCenter().getY();
     }
 
     public void setEnemyHealth(int health) {
@@ -58,7 +62,7 @@ public class EnemyShip {
     public void moveEnemyShip(CanvasWindow canvas){
         enemyShipIcon.moveBy(currentXVelocity, currentYVelocity);
         if (enemyShipIcon.getCenter().getX() > canvas.getWidth() + 100 || enemyShipIcon.getCenter().getY() > canvas.getHeight() + 300 
-        || enemyShipIcon.getCenter().getX() < -200){
+        || enemyShipIcon.getCenter().getX() < -200) {
             enemyShipIcon.setCenter(originalX, originalY);
         }
     }
@@ -81,9 +85,9 @@ public class EnemyShip {
             selectedLaser = null;
             decreaseCurrentHealth();
             if (currentHealth <= 0) {
-                groupManager.getExplosion().setScale(0.2);
-                groupManager.getExplosion().setCenter(centerX, centerY);
-                groupManager.getCanvas().add(groupManager.getExplosion());
+                Explosion explosion = new Explosion(getEnemyX(), getEnemyY());
+                explosion.setScale(0.2);
+                explosion.addExplosion(groupManager.getCanvas());
                 return true;
             }
         }

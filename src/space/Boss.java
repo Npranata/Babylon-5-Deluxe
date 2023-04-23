@@ -18,7 +18,7 @@ public class Boss {
     private Laser selectedLaser; 
     private EnemyShip selectedEnemyShip;
     private double originalX, originalY, centerX, centerY;
-    private int bossHealth = 1000;
+    private int bossHealth = 20;
 
 
     public Boss(double centerX, double centerY, double scale) {
@@ -35,8 +35,12 @@ public class Boss {
         return bossShipIcon;
     }
 
-    public Point getBossPosition(){
-        return bossShipIcon.getCenter();
+    public double getBossX(){
+        return bossShipIcon.getCenter().getX();
+    }
+
+    public double getBossY(){
+        return bossShipIcon.getCenter().getY();
     }
 
     public void setBossHealth(int health) {
@@ -71,9 +75,10 @@ public class Boss {
             selectedLaser = null;
             decreaseCurrentHealth();
             if (bossHealth<= 0) {
-                groupManager.getExplosion().setScale(0.2);
-                groupManager.getExplosion().setCenter(centerX, centerY);
-                groupManager.getCanvas().add(groupManager.getExplosion());
+                // Explosion explosion = new
+                // groupManager.getExplosion().setScale(0.2);
+                // groupManager.getExplosion().setCenter(centerX, centerY);
+                // groupManager.getCanvas().add(groupManager.getExplosion());
                 return true;
             }
         }
@@ -81,7 +86,7 @@ public class Boss {
     }
 
     private void decreaseCurrentHealth() {
-        this.bossHealth -= 10;
+        bossHealth -= 10;
     }
 
     private GraphicsObject checkCollisionPoints(GroupManager groupManager) {

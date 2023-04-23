@@ -36,19 +36,21 @@ public class SpaceshipGame {
     private Boss bossShip, selectedBossShip;
     private Random rand = new Random();
     private int movementCounter = 0; // Used for timing the enemy laser shots
+    private int bossLaserCounter = 0;
     private int playerCounter = 0; // Used for timing the player laser shots
    
     private int HP, currentHP, lives, currentLives, currentScore;
 
     private double initialSpeed = 50;
 
-    private boolean outOfBounds, gameOver, pause = true, wonGame = false, bossTime = false;
+    private boolean outOfBounds, gameOver, pause = true, wonGame = false, bossTime = false, explosionExists = false;
 
     private Random random;
 
     public SpaceshipGame() {
         canvas = new CanvasWindow("Babylon-5", CANVAS_WIDTH, CANVAS_HEIGHT);
-        imageBack = new Image(CANVAS_WIDTH,CANVAS_HEIGHT);        
+        imageBack = new Image(CANVAS_WIDTH,CANVAS_HEIGHT);   
+        Explosion  explosion = new Explosion();  
 
         lives = 2; // Stores the total number of lives the user has each round.
         currentLives = 2; // Stores the number of lives the user has at the moment.
@@ -99,8 +101,8 @@ public class SpaceshipGame {
 
         startButton.onClick(() -> {
             resetGame();
-            bossShip.setBossHealth(1000);
-            enemyShip.setEnemyHealth(50);
+            // bossShip.setBossHealth(1000);
+            // enemyShip.setEnemyHealth(50);
         });
 
         restartButton.onClick(() -> {
@@ -138,12 +140,31 @@ public class SpaceshipGame {
     }
     
     private void bossShipCollision() {
+        bossLaserCounter ++;
         if (bossShip.checkLaserCollision(groupManager)) {
             selectedBossShip = bossShip;
             gameOver = true;
         }
+        if (bossLaserCounter == 40) {
+            createMiddleLasers();
+            bossLaserCounter = 0;
+            explosionCheck();
+        }
+        if (bossLaserCounter == 30) {
+            createSideLasers();
+        }
         updateCurrentHealth();
         updateCurrentScore();
+    }
+
+    public void createSideLasers() {
+        createLaser(bossShip.getBossX() - 160, bossShip.getBossY() + 250, 10, -45, 0);
+        createLaser(bossShip.getBossX() + 150, bossShip.getBossY() + 250, 10, -135, 0);
+    }
+
+    public void createMiddleLasers() {
+        createLaser(bossShip.getBossX() - 30, bossShip.getBossY() + 200, 10, -90, 0);
+        createLaser(bossShip.getBossX() + 30, bossShip.getBossY() + 200, 10, -90, 0);
     }
 
     /**
@@ -159,8 +180,9 @@ public class SpaceshipGame {
                 selectedEnemyShip = enemyShip;
             }
             if (movementCounter == 111) {
+                explosionCheck();
                 movementCounter = 0;
-                createLaser(enemyShip.getPosition().getX(), enemyShip.getPosition().getY() + 40, 10, -90, 0);
+                createLaser(enemyShip.getEnemyX(), enemyShip.getEnemyY() + 40, 10, -90, 0);
             }
         } 
         updateCurrentHealth();
@@ -176,8 +198,9 @@ public class SpaceshipGame {
             groupManager.removeEnemyShip(selectedEnemyShip);
             currentScore += 10;
             selectedEnemyShip = null;
+            explosionExists = true;
         } else if (selectedBossShip != null) {
-            groupManager.getCanvas().remove(bossShip.getBossIcon());
+            canvas.remove(bossShip.getBossIcon());
             currentScore += 150;
             selectedBossShip = null;
         }
@@ -195,11 +218,6 @@ public class SpaceshipGame {
     private void playerShipCollision() {
         if (playerShip.checkLaserCollision(groupManager)) {
             groupManager.removePlayerShip(playerShip);
-            
-            
-            // if (movementCounter == 50) {
-            //     groupManager.getCanvas().remove(groupManager.getExplosion());
-            // }
         }
     }
 
@@ -354,6 +372,13 @@ public class SpaceshipGame {
         canvas.add(bossShip.getBossIcon());
     }
 
+    public void explosionCheck() {
+        if (explosionExists) {
+            groupManager.getCanvas().remove(groupManager.getExplosion());
+            explosionExists = false;
+        }
+    }
+
     /**
      * Resets the canvas by removing everything on the canvas and all the bricks that had been created.
      * Then creates the game components for a new round and allows the game to run.
@@ -410,4 +435,3 @@ public class SpaceshipGame {
         "during which the user can try to break the bricks by bouncing the ball with the paddle.";
     }  
 }
-

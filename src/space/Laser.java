@@ -17,9 +17,6 @@ public class Laser {
 
     private Image laserImage;
 
-
-    // private Ship selectedShip; // The ship the ball has collided with.
-
     public Laser(
             double centerX,
             double centerY,

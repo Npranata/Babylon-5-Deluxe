@@ -50,16 +50,16 @@ public class PlayerShip {
     /*
      * @return The x-value of the upper left corner the paddle.
      */
-    public double getUpperX() {
-        return playerShipIcon.getX();
+    public double getCenterX() {
+        return playerShipIcon.getCenter().getX();
     }
 
     public Point getPosition() {
         return playerShipIcon.getCenter();
     }
 
-    public double getUpperY() {
-        return playerShipIcon.getY();
+    public double getCenterY() {
+        return playerShipIcon.getCenter().getY();
     }
 
     public Image getPlayerShipImage() {
@@ -107,9 +107,10 @@ public class PlayerShip {
             selectedLaser = null;
             decreasePlayerHealth();
             if (currentHealth == 0) {
-                groupManager.getExplosion().setScale(0.2);
-                groupManager.getExplosion().setCenter(centerX, centerY);
-                groupManager.getCanvas().add(groupManager.getExplosion());
+                Explosion explosion = new Explosion(getCenterX(), getCenterY());
+                //groupManager.getExplosion().setScale(0.2);
+                //groupManager.getExplosion().setCenter(centerX, centerY);
+                //groupManager.getCanvas().add(groupManager.getExplosion());
                 return true;
             }
         }

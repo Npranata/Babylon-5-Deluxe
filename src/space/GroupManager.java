@@ -16,8 +16,6 @@ public class GroupManager {
     private GraphicsGroup laserGroup;
     private List<Laser> enemyLaserList;
     private GraphicsGroup enemyLaserGroup;
-    private Image explosion = new Image("ship-icons/explosion.png");
-
 
     /*
      * Constructs a brick manager for the specified window object.
@@ -60,10 +58,6 @@ public class GroupManager {
 
     public CanvasWindow getCanvas() {
         return canvas;
-    }
-
-    public Image getExplosion() {
-        return explosion;
     }
 
     public void removePlayerLaser(Laser laser) {
