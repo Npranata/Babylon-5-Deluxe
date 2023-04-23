@@ -85,9 +85,9 @@ public class EnemyShip {
             selectedLaser = null;
             decreaseCurrentHealth();
             if (currentHealth <= 0) {
-                Explosion explosion = new Explosion(getEnemyX(), getEnemyY());
-                explosion.setScale(0.2);
-                explosion.addExplosion(groupManager.getCanvas());
+                groupManager.getExplosion().setCenter(getEnemyX(), getEnemyY());
+                groupManager.getExplosion().setScale(0.2);
+                groupManager.getCanvas().add(groupManager.getExplosion());
                 return true;
             }
         }

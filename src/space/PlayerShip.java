@@ -107,10 +107,9 @@ public class PlayerShip {
             selectedLaser = null;
             decreasePlayerHealth();
             if (currentHealth == 0) {
-                Explosion explosion = new Explosion(getCenterX(), getCenterY());
-                //groupManager.getExplosion().setScale(0.2);
-                //groupManager.getExplosion().setCenter(centerX, centerY);
-                //groupManager.getCanvas().add(groupManager.getExplosion());
+                groupManager.getExplosion().setScale(0.2);
+                groupManager.getExplosion().setCenter(centerX, centerY);
+                groupManager.getCanvas().add(groupManager.getExplosion());
                 return true;
             }
         }

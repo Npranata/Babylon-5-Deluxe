@@ -50,7 +50,6 @@ public class SpaceshipGame {
     public SpaceshipGame() {
         canvas = new CanvasWindow("Babylon-5", CANVAS_WIDTH, CANVAS_HEIGHT);
         imageBack = new Image(CANVAS_WIDTH,CANVAS_HEIGHT);   
-        Explosion  explosion = new Explosion();  
 
         lives = 2; // Stores the total number of lives the user has each round.
         currentLives = 2; // Stores the number of lives the user has at the moment.

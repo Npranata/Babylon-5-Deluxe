@@ -75,10 +75,9 @@ public class Boss {
             selectedLaser = null;
             decreaseCurrentHealth();
             if (bossHealth<= 0) {
-                // Explosion explosion = new
-                // groupManager.getExplosion().setScale(0.2);
-                // groupManager.getExplosion().setCenter(centerX, centerY);
-                // groupManager.getCanvas().add(groupManager.getExplosion());
+                groupManager.getExplosion().setScale(2);
+                groupManager.getExplosion().setCenter(centerX, centerY);
+                groupManager.getCanvas().add(groupManager.getExplosion());
                 return true;
             }
         }
