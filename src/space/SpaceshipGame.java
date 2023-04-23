@@ -98,7 +98,9 @@ public class SpaceshipGame {
         canvas.add(scoreDisplay);
 
         startButton.onClick(() -> {
-            resetGame();;
+            resetGame();
+            bossShip.setBossHealth(1000);
+            enemyShip.setEnemyHealth(50);
         });
 
         restartButton.onClick(() -> {

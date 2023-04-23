@@ -39,6 +39,10 @@ public class EnemyShip {
         return enemyShipIcon.getCenter();
     }
 
+    public void setEnemyHealth(int health) {
+        currentHealth = health;
+    }
+
     /**
      * Sets the enemy spaceship's starting angle and velocity
      */

@@ -21,43 +21,45 @@ public class Boss {
     private int bossHealth = 1000;
 
 
-public Boss(double centerX, double centerY, double scale) {
-    this.centerX = centerX;
-    this.centerY = centerY;
-    this.originalX = centerX;
-    this.originalY = centerY;
-    bossShipIcon.setImagePath("ship-icons/bossShip.png");
-    bossShipIcon.setScale(scale);
-    bossShipIcon.setCenter(centerX, centerY);
-    
-}
+    public Boss(double centerX, double centerY, double scale) {
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.originalX = centerX;
+        this.originalY = centerY;
+        bossShipIcon.setImagePath("ship-icons/bossShip.png");
+        bossShipIcon.setScale(scale);
+        bossShipIcon.setCenter(centerX, centerY);
+    }  
 
-public Image getBossIcon(){
-    return bossShipIcon;
-}
-
-public Point getBossPosition(){
-    return bossShipIcon.getCenter();
-}
-
-/**
-* Moves the boss according to current dx and dy
-*/
-public void moveBoss(){
-    if (centerY == 30) {
-        return;
+    public Image getBossIcon(){
+        return bossShipIcon;
     }
-    bossShipIcon.moveBy(0, Y_VELOCITY);
-    centerX = bossShipIcon.getCenter().getX();
-    centerY = bossShipIcon.getCenter().getY();
-}
 
-/**
+    public Point getBossPosition(){
+        return bossShipIcon.getCenter();
+    }
+
+    public void setBossHealth(int health) {
+        bossHealth = health;
+    }
+
+    /**
+    * Moves the boss according to current dx and dy
+    */
+    public void moveBoss(){
+        if (centerY == 30) {
+            return;
+        }
+        bossShipIcon.moveBy(0, Y_VELOCITY);
+        centerX = bossShipIcon.getCenter().getX();
+        centerY = bossShipIcon.getCenter().getY();
+    }
+
+    /**
      * Removes enemy ship from canvas and adds explosion when laser hits enemy's ship
-     * @param canvas
-     * @param list
-     */
-   public boolean checkLaserCollision(GroupManager groupManager) {
+     * @param groupManager
+    */
+    public boolean checkLaserCollision(GroupManager groupManager) {
         GraphicsObject element = checkCollisionPoints(groupManager);
         for (Laser laser : groupManager.getLaserList()) {
             if (element == laser.getLaserImage()) {
@@ -98,9 +100,6 @@ public void moveBoss(){
         if (element == null) {
             element = groupManager.getLaserGroup().getElementAt(shipLeftX, shipSideY);
         }
-
         return element;
     }
- 
-
 }
