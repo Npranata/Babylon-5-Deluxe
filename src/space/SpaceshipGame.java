@@ -106,7 +106,7 @@ public class SpaceshipGame {
        
 
         mainMenuButton = new Button("Return back to Menu");
-        mainMenuButton.setPosition(CANVAS_HEIGHT/2 - 150, CANVAS_HEIGHT/2 + 25);
+        mainMenuButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2 + 50);
 
         canvas.add(startGameText);
         canvas.add(startButton);
@@ -336,8 +336,8 @@ public class SpaceshipGame {
             canvas.add(gameOverText);
         } else {
             canvas.add(gameWinText);
+            canvas.add(continueButton);
         }
-        canvas.add(continueButton);
         canvas.add(mainMenuButton);
     }
 
@@ -425,21 +425,20 @@ public class SpaceshipGame {
             imageBack.setImagePath("ship-icons/spaceBackground.png"); 
             imageBack.setCenter(0,0);
             imageBack.setScale(5);
-            canvas.add(imageBack);
             scoreDisplay.setFont(FontStyle.BOLD,30);
             scoreDisplay.setFillColor(Color.WHITE);
             scoreDisplay.setPosition(15,CANVAS_HEIGHT - 20);
             lifeDisplay.setFont(FontStyle.BOLD,30);
             lifeDisplay.setFillColor(Color.WHITE);
             lifeDisplay.setPosition(200,CANVAS_HEIGHT - 20);
-            createPlayerShip(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, 0.2);
+            canvas.add(imageBack);
         }
+        createPlayerShip(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, 0.2);
         createEnemyShip(220, 100, 0.17, 50, 70);
         livesDisplay.setText("Lives: " + currentLives);
         scoreDisplay.setText("Score: " + currentScore);
         canvas.add(scoreDisplay);
         canvas.add(lifeDisplay);
-        canvas.draw();
         canvas.pause(100);
     }
 
