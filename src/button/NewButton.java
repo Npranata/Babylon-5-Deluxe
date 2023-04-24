@@ -16,9 +16,12 @@ import java.awt.event.MouseEvent;
 public class NewButton extends ComponentSwing {
 
     private JButton button;
+    private Color borderColor, buttonColor;
 
-    public NewButton(String title) {
+    public NewButton(String title, Color borderColor, Color buttonColor) {
         this(new JButton(title));
+        this.borderColor = borderColor;
+        this.buttonColor = buttonColor;
     }
 
     private NewButton(JButton button) {
@@ -30,8 +33,8 @@ public class NewButton extends ComponentSwing {
         // gets truncated, plus default Swing style on Windows is ugly.
         // We thus do manual styling + manual size computation. The style below brings
         // appearance and size roughly into parity across Mac and Windows.
-        button.setBorder(new LineBorder(Color.red));
-        button.setBackground(Color.ORANGE);
+        button.setBorder(new LineBorder(borderColor));
+        button.setBackground(buttonColor);
         button.setOpaque(true);
 
         String font = "Tahoma";
@@ -46,7 +49,7 @@ public class NewButton extends ComponentSwing {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                button.setBackground(Color.red);
+                button.setBackground(buttonColor);
             }
         
             @Override
@@ -70,7 +73,7 @@ public class NewButton extends ComponentSwing {
 
     public static void main(String[] args) {
         CanvasWindow window = new CanvasWindow("Yes", 500, 800);
-        NewButton button = new NewButton("This");
+        NewButton button = new NewButton("This", Color.red, Color.blue);
         window.add(button, 30, 100);
 
         button.onClick(() -> {

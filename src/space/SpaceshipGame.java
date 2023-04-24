@@ -24,7 +24,9 @@ public class SpaceshipGame {
 
     private GraphicsText lifeDisplay, livesDisplay, gameOverText, gameWinText, startGameText, scoreDisplay;
     private Button startButton;
-    private Button restartButton;
+    private Button continueButton;
+    private Button mainMenuButton;
+
 
     private GroupManager groupManager;
  
@@ -69,12 +71,14 @@ public class SpaceshipGame {
         // Game loss announcement text that appears after the user loses the game.
         gameOverText = new GraphicsText();
         gameOverText.setFont(FontStyle.BOLD, 50); 
+        gameOverText.setFillColor(Color.white);
         gameOverText.setPosition(CANVAS_WIDTH/2 - 150,CANVAS_HEIGHT/2 - 50);
         gameOverText.setText("GAME OVER");
 
         // Game win announcement text that appears after the user wins the game.
         gameWinText = new GraphicsText();
         gameWinText.setFont(FontStyle.BOLD, 50);
+        gameWinText.setFillColor(Color.white);
         gameWinText.setPosition(CANVAS_WIDTH/2 - 120,CANVAS_HEIGHT/2 - 50);
         gameWinText.setText("YOU WIN!");
 
@@ -97,8 +101,12 @@ public class SpaceshipGame {
         
         
         // Button that the user presses to restart the game after a win or loss.
-        restartButton = new Button("RESTART");
-        restartButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2);
+        continueButton = new Button("CONTINUE");
+        continueButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2);
+       
+
+        mainMenuButton = new Button("Return back to Menu");
+        mainMenuButton.setPosition(CANVAS_HEIGHT/2 - 150, CANVAS_HEIGHT/2 + 25);
 
         canvas.add(startGameText);
         canvas.add(startButton);
@@ -109,10 +117,16 @@ public class SpaceshipGame {
             // bossShip.setBossHealth(1000);
             // enemyShip.setEnemyHealth(50);
         });
-
-        restartButton.onClick(() -> {
+  
+        continueButton.onClick(() -> {
             resetStatus();
             resetGame();
+            
+        });
+
+        mainMenuButton.onClick(()->{
+           
+            
         });
 
         /*
@@ -148,7 +162,6 @@ public class SpaceshipGame {
         bossLaserCounter ++;
         if (bossShip.checkLaserCollision(groupManager)) {
             selectedBossShip = bossShip;
-            gameOver = true;
         }
         if (bossLaserCounter == 40) {
             createMiddleLasers();
@@ -208,6 +221,8 @@ public class SpaceshipGame {
             canvas.remove(bossShip.getBossIcon());
             currentScore += 150;
             selectedBossShip = null;
+            gameOver = false;
+            endGame();
         }
         scoreDisplay.setText("Score: " + currentScore);
     }
@@ -222,7 +237,8 @@ public class SpaceshipGame {
     */
     private void playerShipCollision() {
         if (playerShip.checkLaserCollision(groupManager)) {
-            groupManager.removePlayerShip(playerShip);
+            explosionExists = true;
+            continueGame();
         }
     }
 
@@ -298,15 +314,15 @@ public class SpaceshipGame {
      * Otherwise, the game is over and a "Game Over" screen is displayed.
      */
     private void continueGame() {
-        if (currentLives > 1) {
-            canvas.remove(playerShip.getPlayerShipImage());
-            currentLives --;;
-            outOfBounds = false;
+        canvas.remove(playerShip.getPlayerShipImage());
+        currentLives --;;
+
+        if (currentLives > 0) {
             createGame();
             return;
         } else {
             gameOver = true;
-            outOfBounds = false;
+            endGame();
         }   
     }
 
@@ -316,13 +332,13 @@ public class SpaceshipGame {
      */
     private void endGame() {
         pause = true;
-        canvas.removeAll();
         if (gameOver) {
             canvas.add(gameOverText);
         } else {
             canvas.add(gameWinText);
         }
-        canvas.add(restartButton);
+        canvas.add(continueButton);
+        canvas.add(mainMenuButton);
     }
 
     /**
@@ -331,7 +347,8 @@ public class SpaceshipGame {
     private void resetStatus() {
         gameOver = false;
         wonGame = false;
-        currentLives = 2;
+        bossTime = false;
+        // currentLives = 2;
         // currentHP = 100;
     }
 
@@ -415,13 +432,13 @@ public class SpaceshipGame {
             lifeDisplay.setFont(FontStyle.BOLD,30);
             lifeDisplay.setFillColor(Color.WHITE);
             lifeDisplay.setPosition(200,CANVAS_HEIGHT - 20);
+            createPlayerShip(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, 0.2);
         }
+        createEnemyShip(220, 100, 0.17, 50, 70);
         livesDisplay.setText("Lives: " + currentLives);
         scoreDisplay.setText("Score: " + currentScore);
         canvas.add(scoreDisplay);
         canvas.add(lifeDisplay);
-        createPlayerShip(220, 600, 0.2);
-        createEnemyShip(220, 100, 0.17, 50, 70);
         canvas.draw();
         canvas.pause(100);
     }

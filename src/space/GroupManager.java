@@ -117,11 +117,13 @@ public class GroupManager {
      */
     public void removeAll() {
         for (Laser l : laserList) {
-            removePlayerLaser(l);
+            laserGroup.remove(l.getLaserImage());
         }
+        laserList.clear();
 
         for (EnemyShip ES : enemyList) {
-            removeEnemyShip(ES);
+            enemyGroup.remove(ES.getEnemyShipImage());
         }
+        enemyList.clear();
     }
 }

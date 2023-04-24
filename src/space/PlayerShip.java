@@ -27,18 +27,6 @@ public class PlayerShip {
         playerShipIcon.setScale(playerScale);
     }
 
-    /*
-     * Sets the x-value of the upper left corner of the paddle. Since the mouse position x-value is used to control 
-     * the paddle, and the mouse is in the middle of the paddle, the x-value must be adjusted accordingly.
-     */
-    // public void setUpperX(double x) {
-    //     playerShipIcon.setPosition(x - 100, upperLeftY);
-    // }
-
-    // public void setUpperY(double y) {
-    //     playerShipIcon.setPosition(upperLeftX, y - 250);
-    // }
-
     public void setLocation(Point mouse) {
         playerShipIcon.setCenter(mouse);
     }
@@ -73,9 +61,9 @@ public class PlayerShip {
     private GraphicsObject checkCollisionPoints(GroupManager groupManager) {
         double shipCenterX = playerShipIcon.getCenter().getX();
         double shipCenterY = playerShipIcon.getCenter().getY();
-        double shipRightX = shipCenterX + 5;
+        double shipRightX = shipCenterX + 20; //was 5
         double shipLowerY = shipCenterY + 5;
-        double shipLeftX = shipCenterX - 5;
+        double shipLeftX = shipCenterX - 20; //was 5
         double shipUpperY = shipCenterY - 5;
 
         element = groupManager.getEnemyLaserGroup().getElementAt(shipCenterX, shipCenterY);
@@ -83,10 +71,10 @@ public class PlayerShip {
             element = groupManager.getEnemyLaserGroup().getElementAt(shipCenterX, shipLowerY);
         }
         if (element == null) {
-            element = groupManager.getEnemyLaserGroup().getElementAt(shipRightX, shipCenterY);
+            element = groupManager.getEnemyLaserGroup().getElementAt(shipRightX, shipCenterY + 15); 
         }
         if (element == null) {
-            element = groupManager.getEnemyLaserGroup().getElementAt(shipLeftX, shipCenterY);
+            element = groupManager.getEnemyLaserGroup().getElementAt(shipLeftX, shipCenterY + 15);
         }
         if (element == null) {
             element = groupManager.getEnemyLaserGroup().getElementAt(shipCenterX, shipUpperY);
@@ -108,7 +96,7 @@ public class PlayerShip {
             decreasePlayerHealth();
             if (currentHealth == 0) {
                 groupManager.getExplosion().setScale(0.2);
-                groupManager.getExplosion().setCenter(centerX, centerY);
+                groupManager.getExplosion().setCenter(getCenterX(), getCenterY());
                 groupManager.getCanvas().add(groupManager.getExplosion());
                 return true;
             }
