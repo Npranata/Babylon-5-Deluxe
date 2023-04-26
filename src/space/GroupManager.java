@@ -121,6 +121,11 @@ public class GroupManager {
         }
         laserList.clear();
 
+        for (Laser l : enemyLaserList) {
+            enemyLaserGroup.remove(l.getLaserImage());
+        }
+        enemyLaserList.clear();
+
         for (EnemyShip ES : enemyList) {
             enemyGroup.remove(ES.getEnemyShipImage());
         }

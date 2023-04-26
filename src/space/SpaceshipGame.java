@@ -38,8 +38,9 @@ public class SpaceshipGame {
     private Boss bossShip, selectedBossShip;
     private Random rand = new Random();
     private int movementCounter = 0; // Used for timing the enemy laser shots
-    private int bossLaserCounter = 0;
+    private int bossLaserCounter = 0; // Used for timing the boss laser shots
     private int playerCounter = 0; // Used for timing the player laser shots
+    private int explosionCounter = 0;
    
     private int HP, currentHP, lives, currentLives, currentScore;
 
@@ -120,8 +121,7 @@ public class SpaceshipGame {
   
         continueButton.onClick(() -> {
             resetStatus();
-            resetGame();
-            
+            resetGame();            
         });
 
         mainMenuButton.onClick(()->{
@@ -137,6 +137,7 @@ public class SpaceshipGame {
 
         canvas.animate(() -> {
             if(!pause){
+                explosionCounter ++;
                 if (!bossTime) {
                     if (groupManager.enemiesExist()) {
                         enemyShipMovementAndLasers();
@@ -152,6 +153,10 @@ public class SpaceshipGame {
                 playerShipCollision();
                 laserBounds(groupManager.getLaserList());
                 laserBounds(groupManager.getEnemyLaserList());
+                if (explosionCounter == 35) {
+                    explosionCheck();
+                    explosionCounter = 0;
+                }
             }
         });
         mouseControl();
@@ -166,7 +171,6 @@ public class SpaceshipGame {
         if (bossLaserCounter == 40) {
             createMiddleLasers();
             bossLaserCounter = 0;
-            explosionCheck();
         }
         if (bossLaserCounter == 30) {
             createSideLasers();
@@ -196,9 +200,9 @@ public class SpaceshipGame {
             movementCounter ++;
             if (enemyShip.checkLaserCollision(groupManager)) {
                 selectedEnemyShip = enemyShip;
+                explosionCounter = 0;
             }
             if (movementCounter == 111) {
-                explosionCheck();
                 movementCounter = 0;
                 createLaser(enemyShip.getEnemyX(), enemyShip.getEnemyY() + 40, 10, -90, 0);
             }
@@ -237,6 +241,7 @@ public class SpaceshipGame {
     */
     private void playerShipCollision() {
         if (playerShip.checkLaserCollision(groupManager)) {
+            explosionCounter = 0;
             explosionExists = true;
             continueGame();
         }
@@ -408,6 +413,7 @@ public class SpaceshipGame {
     private void resetGame() {
         groupManager.removeAll();
         canvas.removeAll();
+        startGame();
         createGame();
         pause = false;
     }
@@ -419,27 +425,44 @@ public class SpaceshipGame {
      */
     private void createGame() {
         if (currentLives == 2) {
-            livesDisplay.setFont(FontStyle.BOLD, 20);
-            livesDisplay.setPosition(15,30);
-            canvas.add(livesDisplay);
-            imageBack.setImagePath("ship-icons/spaceBackground.png"); 
-            imageBack.setCenter(0,0);
-            imageBack.setScale(5);
-            scoreDisplay.setFont(FontStyle.BOLD,30);
-            scoreDisplay.setFillColor(Color.WHITE);
-            scoreDisplay.setPosition(15,CANVAS_HEIGHT - 20);
-            lifeDisplay.setFont(FontStyle.BOLD,30);
-            lifeDisplay.setFillColor(Color.WHITE);
-            lifeDisplay.setPosition(200,CANVAS_HEIGHT - 20);
-            canvas.add(imageBack);
+            // livesDisplay.setFont(FontStyle.BOLD, 20);
+            // livesDisplay.setPosition(15,30);
+            // canvas.add(livesDisplay);
+            // imageBack.setImagePath("ship-icons/spaceBackground.png"); 
+            // imageBack.setCenter(0,0);
+            // imageBack.setScale(5);
+            // scoreDisplay.setFont(FontStyle.BOLD,30);
+            // scoreDisplay.setFillColor(Color.WHITE);
+            // scoreDisplay.setPosition(15,CANVAS_HEIGHT - 20);
+            // lifeDisplay.setFont(FontStyle.BOLD,30);
+            // lifeDisplay.setFillColor(Color.WHITE);
+            // lifeDisplay.setPosition(200,CANVAS_HEIGHT - 20);
+            // canvas.add(imageBack);
+            // createEnemyShip(220, 100, 0.17, 50, 70);
         }
         createPlayerShip(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, 0.2);
-        createEnemyShip(220, 100, 0.17, 50, 70);
         livesDisplay.setText("Lives: " + currentLives);
         scoreDisplay.setText("Score: " + currentScore);
         canvas.add(scoreDisplay);
         canvas.add(lifeDisplay);
         canvas.pause(100);
+    }
+
+    private void startGame() {
+        livesDisplay.setFont(FontStyle.BOLD, 20);
+        livesDisplay.setPosition(15,30);
+        canvas.add(livesDisplay);
+        imageBack.setImagePath("ship-icons/spaceBackground.png"); 
+        imageBack.setCenter(0,0);
+        imageBack.setScale(5);
+        scoreDisplay.setFont(FontStyle.BOLD,30);
+        scoreDisplay.setFillColor(Color.WHITE);
+        scoreDisplay.setPosition(15,CANVAS_HEIGHT - 20);
+        lifeDisplay.setFont(FontStyle.BOLD,30);
+        lifeDisplay.setFillColor(Color.WHITE);
+        lifeDisplay.setPosition(200,CANVAS_HEIGHT - 20);
+        canvas.add(imageBack);
+        createEnemyShip(220, 100, 0.17, 50, 70);
     }
 
     /**
