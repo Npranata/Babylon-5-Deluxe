@@ -8,9 +8,13 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.io.File;
+import java.io.IOException;
+
+import javax.sound.sampled.*;
 
 /**
- * A game of Breakout.
+ * A game of [REDACTED].
  * 
  * Use the mouse to move the paddle to the left and right. The ball will move to the right if it hits right of the middle
  * of the paddle and left if it hits left of the middle of the paddle.
@@ -34,6 +38,7 @@ public class SpaceshipGame {
     private List<Laser> oldLasers;
     private PlayerShip playerShip;
     private Image imageBack;
+    private Image menuBack;
     private EnemyShip enemyShip, selectedEnemyShip;
     private Boss bossShip, selectedBossShip;
     private Random rand = new Random();
@@ -50,15 +55,25 @@ public class SpaceshipGame {
 
     private Random random;
 
-    public SpaceshipGame() {
+    public SpaceshipGame() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         canvas = new CanvasWindow("Babylon-5", CANVAS_WIDTH, CANVAS_HEIGHT);
-        imageBack = new Image(CANVAS_WIDTH,CANVAS_HEIGHT);   
+        imageBack = new Image(CANVAS_WIDTH, CANVAS_HEIGHT);   
+        menuBack = new Image(CANVAS_WIDTH, CANVAS_HEIGHT);
 
         lives = 2; // Stores the total number of lives the user has each round.
         currentLives = 2; // Stores the number of lives the user has at the moment.
         currentScore = 0;
         HP = 100;
         currentHP = 100;
+
+        File file = new File("res/ship-icons/Without_Fear.wav");
+        AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioStream);
+        clip.start();
+        
+        
+
         //Text that displays current Health
         lifeDisplay = new GraphicsText();
         
@@ -67,7 +82,10 @@ public class SpaceshipGame {
 
         // Text that displays the number of lives the user currently has.
         livesDisplay = new GraphicsText();
-        lifeDisplay = new GraphicsText();
+        livesDisplay.setFont(FontStyle.BOLD,30);
+        livesDisplay.setFillColor(Color.WHITE);
+        livesDisplay.setPosition(430, CANVAS_HEIGHT - 20);
+        livesDisplay.setText("LIVES: " + currentLives);
 
         // Game loss announcement text that appears after the user loses the game.
         gameOverText = new GraphicsText();
@@ -85,9 +103,10 @@ public class SpaceshipGame {
 
         // Text that appears on the canvas before the game starts.
         startGameText = new GraphicsText();
-        startGameText.setFont(FontStyle.BOLD, 50);
+        startGameText.setFont(FontStyle.BOLD_ITALIC, 50);
+        startGameText.setFillColor(Color.white);
         startGameText.setPosition(CANVAS_WIDTH/2 - 150, 150);
-        startGameText.setText("BABYLON 5");
+        startGameText.setText("BABYLON-5");
 
         groupManager = new GroupManager(canvas);
 
@@ -106,12 +125,11 @@ public class SpaceshipGame {
         continueButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2);
        
 
-        mainMenuButton = new Button("Return back to Menu");
+        mainMenuButton = new Button("Return Back to Menu");
         mainMenuButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2 + 50);
 
-        canvas.add(startGameText);
-        canvas.add(startButton);
         canvas.add(scoreDisplay);
+        createMainMenu();
 
         startButton.onClick(() -> {
             resetGame();
@@ -125,8 +143,8 @@ public class SpaceshipGame {
         });
 
         mainMenuButton.onClick(()->{
-           
-            
+            resetStatus();
+            createMainMenu();
         });
 
         /*
@@ -162,6 +180,17 @@ public class SpaceshipGame {
         mouseControl();
         keyControl();
     }
+
+    private void createMainMenu() {
+        canvas.removeAll();
+        groupManager.removeAll();
+        menuBack.setImagePath("ship-icons/MenuBackground.jpg"); 
+        menuBack.setCenter(300,400);
+        menuBack.setScale(.69);
+        canvas.add(menuBack);
+        canvas.add(startGameText);
+        canvas.add(startButton);
+     }
     
     private void bossShipCollision() {
         bossLaserCounter ++;
@@ -309,7 +338,7 @@ public class SpaceshipGame {
         });
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         SpaceshipGame game = new SpaceshipGame();
     }
 
@@ -321,6 +350,7 @@ public class SpaceshipGame {
     private void continueGame() {
         canvas.remove(playerShip.getPlayerShipImage());
         currentLives --;;
+        livesDisplay.setText("LIVES: " + currentLives);
 
         if (currentLives > 0) {
             createGame();
@@ -353,7 +383,8 @@ public class SpaceshipGame {
         gameOver = false;
         wonGame = false;
         bossTime = false;
-        // currentLives = 2;
+        explosionExists = false;
+        currentLives = 2;
         // currentHP = 100;
     }
 
@@ -424,34 +455,16 @@ public class SpaceshipGame {
      * After the components are prepared, the game is paused for a moment to ready the player before it starts.
      */
     private void createGame() {
-        if (currentLives == 2) {
-            // livesDisplay.setFont(FontStyle.BOLD, 20);
-            // livesDisplay.setPosition(15,30);
-            // canvas.add(livesDisplay);
-            // imageBack.setImagePath("ship-icons/spaceBackground.png"); 
-            // imageBack.setCenter(0,0);
-            // imageBack.setScale(5);
-            // scoreDisplay.setFont(FontStyle.BOLD,30);
-            // scoreDisplay.setFillColor(Color.WHITE);
-            // scoreDisplay.setPosition(15,CANVAS_HEIGHT - 20);
-            // lifeDisplay.setFont(FontStyle.BOLD,30);
-            // lifeDisplay.setFillColor(Color.WHITE);
-            // lifeDisplay.setPosition(200,CANVAS_HEIGHT - 20);
-            // canvas.add(imageBack);
-            // createEnemyShip(220, 100, 0.17, 50, 70);
-        }
         createPlayerShip(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, 0.2);
         livesDisplay.setText("Lives: " + currentLives);
         scoreDisplay.setText("Score: " + currentScore);
         canvas.add(scoreDisplay);
         canvas.add(lifeDisplay);
+        canvas.add(livesDisplay);
         canvas.pause(100);
     }
 
     private void startGame() {
-        livesDisplay.setFont(FontStyle.BOLD, 20);
-        livesDisplay.setPosition(15,30);
-        canvas.add(livesDisplay);
         imageBack.setImagePath("ship-icons/spaceBackground.png"); 
         imageBack.setCenter(0,0);
         imageBack.setScale(5);
