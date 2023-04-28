@@ -10,7 +10,7 @@ public class PlayerShip {
 
     private Image playerShipIcon = new Image(0,0);
     private double centerX, centerY, playerScale;
-    private int currentHealth = 100;
+    private int currentHealth;
     private GraphicsObject element;
     private Laser selectedLaser;
 
@@ -56,6 +56,10 @@ public class PlayerShip {
 
     public int getPlayerHealth() {
         return currentHealth;
+    }
+
+    public void setPlayerHealth(int currentHP) {
+        currentHealth = currentHP;
     }
 
     private GraphicsObject checkCollisionPoints(GroupManager groupManager) {

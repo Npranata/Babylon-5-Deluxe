@@ -47,7 +47,7 @@ public class SpaceshipGame {
     private int playerCounter = 0; // Used for timing the player laser shots
     private int explosionCounter = 0;
    
-    private int HP, currentHP, lives, currentLives, currentScore;
+    private int currentHP, lives, currentLives, currentScore;
 
     private double initialSpeed = 50;
 
@@ -63,16 +63,13 @@ public class SpaceshipGame {
         lives = 2; // Stores the total number of lives the user has each round.
         currentLives = 2; // Stores the number of lives the user has at the moment.
         currentScore = 0;
-        HP = 100;
-        currentHP = 100;
 
         File file = new File("res/ship-icons/Without_Fear.wav");
         AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
         Clip clip = AudioSystem.getClip();
         clip.open(audioStream);
-        clip.start();
-        
-        
+        clip.start();     
+        clip.loop(-1);
 
         //Text that displays current Health
         lifeDisplay = new GraphicsText();
@@ -115,11 +112,6 @@ public class SpaceshipGame {
         startButton.setScale(50);
         startButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2);
         
-        // MenuButton menuButton = new MenuButton(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2 + 100, 1);
-        // canvas.add(menuButton.getMenuButtonImage());
-        // menuButton.onClick()
-        
-        
         // Button that the user presses to restart the game after a win or loss.
         continueButton = new Button("CONTINUE");
         continueButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2);
@@ -144,6 +136,7 @@ public class SpaceshipGame {
 
         mainMenuButton.onClick(()->{
             resetStatus();
+            currentScore = 0;
             createMainMenu();
         });
 
@@ -234,6 +227,7 @@ public class SpaceshipGame {
             if (movementCounter == 111) {
                 movementCounter = 0;
                 createLaser(enemyShip.getEnemyX(), enemyShip.getEnemyY() + 40, 10, -90, 0);
+
             }
         } 
         updateCurrentHealth();
@@ -261,7 +255,7 @@ public class SpaceshipGame {
     }
 
     private void updateCurrentHealth() {
-        int currentHP = playerShip.getPlayerHealth();
+        currentHP = playerShip.getPlayerHealth();
         lifeDisplay.setText("Health: " + currentHP);
     }
 
@@ -384,8 +378,8 @@ public class SpaceshipGame {
         wonGame = false;
         bossTime = false;
         explosionExists = false;
+        playerCounter = 0;
         currentLives = 2;
-        // currentHP = 100;
     }
 
     /**
@@ -416,7 +410,7 @@ public class SpaceshipGame {
     }
 
     public void createEnemyShip(double upperLeftX, double upperLeftY, double scale, double angle, double speed){
-        for (int i = 0; i < .01; i++){ //was i <5
+        for (int i = 0; i < 5; i++){ //was i <5
             for (int j = -400; j < 0; j += 100) { //was j<0
                 enemyShip = new EnemyShip(i * 15, j, scale);
                 groupManager.addEnemyShip(enemyShip);
@@ -444,9 +438,14 @@ public class SpaceshipGame {
     private void resetGame() {
         groupManager.removeAll();
         canvas.removeAll();
-        startGame();
         createGame();
+        startGame();
         pause = false;
+        if (currentScore == 0) {
+            playerShip.setPlayerHealth(100);
+        } else {
+            playerShip.setPlayerHealth(currentHP);
+        }
     }
 
     /**
@@ -455,6 +454,10 @@ public class SpaceshipGame {
      * After the components are prepared, the game is paused for a moment to ready the player before it starts.
      */
     private void createGame() {
+        imageBack.setImagePath("ship-icons/spaceBackground.png"); 
+        imageBack.setCenter(0,0);
+        imageBack.setScale(2.5); //was 5
+        canvas.add(imageBack);
         createPlayerShip(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, 0.2);
         livesDisplay.setText("Lives: " + currentLives);
         scoreDisplay.setText("Score: " + currentScore);
@@ -465,16 +468,12 @@ public class SpaceshipGame {
     }
 
     private void startGame() {
-        imageBack.setImagePath("ship-icons/spaceBackground.png"); 
-        imageBack.setCenter(0,0);
-        imageBack.setScale(5);
         scoreDisplay.setFont(FontStyle.BOLD,30);
         scoreDisplay.setFillColor(Color.WHITE);
         scoreDisplay.setPosition(15,CANVAS_HEIGHT - 20);
         lifeDisplay.setFont(FontStyle.BOLD,30);
         lifeDisplay.setFillColor(Color.WHITE);
         lifeDisplay.setPosition(200,CANVAS_HEIGHT - 20);
-        canvas.add(imageBack);
         createEnemyShip(220, 100, 0.17, 50, 70);
     }
 
