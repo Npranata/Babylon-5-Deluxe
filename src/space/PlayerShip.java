@@ -98,7 +98,7 @@ public class PlayerShip {
             groupManager.removeEnemyLaser(selectedLaser);
             selectedLaser = null;
             decreasePlayerHealth();
-            if (currentHealth == 0) {
+            if (currentHealth <= 0) {
                 groupManager.getExplosion().setScale(0.2);
                 groupManager.getExplosion().setCenter(getCenterX(), getCenterY());
                 groupManager.getCanvas().add(groupManager.getExplosion());

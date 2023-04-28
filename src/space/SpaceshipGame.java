@@ -343,11 +343,12 @@ public class SpaceshipGame {
      */
     private void continueGame() {
         canvas.remove(playerShip.getPlayerShipImage());
-        currentLives --;;
+        currentLives --;
         livesDisplay.setText("LIVES: " + currentLives);
 
         if (currentLives > 0) {
             currentHP = 100;
+            playerShip.setPlayerHealth(currentHP);
             createGame();
             return;
         } else {
@@ -407,6 +408,7 @@ public class SpaceshipGame {
      */
     public void createPlayerShip(double upperLeftX, double upperLeftY, double scale) {
         playerShip = new PlayerShip(upperLeftX, upperLeftY, scale);
+        playerShip.setPlayerHealth(currentHP);
         canvas.add(playerShip.getPlayerShipImage());
     }
 
@@ -439,8 +441,8 @@ public class SpaceshipGame {
     private void resetGame() {
         groupManager.removeAll();
         canvas.removeAll();
-        createGame();
         startGame();
+        createGame();
         pause = false;
         if (currentScore == 0) {
             playerShip.setPlayerHealth(100);
@@ -455,10 +457,6 @@ public class SpaceshipGame {
      * After the components are prepared, the game is paused for a moment to ready the player before it starts.
      */
     private void createGame() {
-        imageBack.setImagePath("ship-icons/spaceBackground.png"); 
-        imageBack.setCenter(0,0);
-        imageBack.setScale(2);
-        canvas.add(imageBack);
         createPlayerShip(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, 0.2);
         livesDisplay.setText("Lives: " + currentLives);
         scoreDisplay.setText("Score: " + currentScore);
@@ -469,6 +467,11 @@ public class SpaceshipGame {
     }
 
     private void startGame() {
+        imageBack.setImagePath("ship-icons/spaceBackground.png"); 
+        imageBack.setCenter(0,0);
+        imageBack.setScale(2);
+        canvas.add(imageBack);
+
         scoreDisplay.setFont(FontStyle.BOLD,30);
         scoreDisplay.setFillColor(Color.WHITE);
         scoreDisplay.setPosition(15,CANVAS_HEIGHT - 20);
