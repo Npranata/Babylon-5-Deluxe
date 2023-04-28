@@ -347,6 +347,7 @@ public class SpaceshipGame {
         livesDisplay.setText("LIVES: " + currentLives);
 
         if (currentLives > 0) {
+            currentHP = 100;
             createGame();
             return;
         } else {
@@ -456,7 +457,7 @@ public class SpaceshipGame {
     private void createGame() {
         imageBack.setImagePath("ship-icons/spaceBackground.png"); 
         imageBack.setCenter(0,0);
-        imageBack.setScale(2.5); //was 5
+        imageBack.setScale(2);
         canvas.add(imageBack);
         createPlayerShip(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, 0.2);
         livesDisplay.setText("Lives: " + currentLives);
