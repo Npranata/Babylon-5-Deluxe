@@ -13,8 +13,6 @@ public class Laser {
     private double centerX, centerY, initialSpeed, initialAngle, currentXVelocity, currentYVelocity;
     private int chooseColor;
 
-    private Random random;
-
     private Image laserImage;
 
     public Laser(
@@ -89,20 +87,6 @@ public class Laser {
         laserImage.moveBy(currentXVelocity, currentYVelocity);
         centerX = laserImage.getCenter().getX();
         centerY = laserImage.getCenter().getY();
-    }
-
-    /**
-     * Adds the ball's shape to the given canvas.
-     */
-    // public void addToCanvas(CanvasWindow canvas) {
-    //     canvas.add(laserImage);
-    // }
-
-    /**
-     * Convenience to return a random floating point number, min ≤ n < max.
-     */
-    public double randomDouble(double min, double max) {
-        return random.nextDouble() * (max - min) + min;
     }
     
     public Image getLaserImage(){

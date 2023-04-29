@@ -3,7 +3,6 @@ import edu.macalester.graphics.*;
 
 import java.awt.Canvas;
 import java.util.Random;
-import java.util.random.*;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -11,21 +10,18 @@ import java.util.ArrayList;
 public class Boss {
     private Image bossShipIcon = new Image(0,0);
     private final double Y_VELOCITY = 1;
-    private Random rand = new Random();
     private Image explosion = new Image("ship-icons/explosion.png");
     private GraphicsObject element;
 
     private Laser selectedLaser; 
     private EnemyShip selectedEnemyShip;
-    private double originalX, originalY, centerX, centerY;
+    private double centerX, centerY;
     private int bossHealth = 50;
 
 
     public Boss(double centerX, double centerY, double scale) {
         this.centerX = centerX;
         this.centerY = centerY;
-        this.originalX = centerX;
-        this.originalY = centerY;
         bossShipIcon.setImagePath("ship-icons/bossShip.png");
         bossShipIcon.setScale(scale);
         bossShipIcon.setCenter(centerX, centerY);
@@ -51,12 +47,7 @@ public class Boss {
     * Moves the boss according to current dx and dy
     */
     public void moveBoss(){
-        if (centerY == 30) {
-            return;
-        }
         bossShipIcon.moveBy(0, Y_VELOCITY);
-        centerX = bossShipIcon.getCenter().getX();
-        centerY = bossShipIcon.getCenter().getY();
     }
 
     /**
@@ -74,7 +65,7 @@ public class Boss {
             groupManager.removePlayerLaser(selectedLaser);
             selectedLaser = null;
             decreaseCurrentHealth();
-            if (bossHealth<= 0) {
+            if (bossHealth <= 0) {
                 groupManager.getExplosion().setScale(2);
                 groupManager.getExplosion().setCenter(centerX, centerY);
                 groupManager.getCanvas().add(groupManager.getExplosion());
