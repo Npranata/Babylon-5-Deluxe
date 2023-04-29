@@ -7,6 +7,7 @@ import edu.macalester.graphics.events.Key;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.io.File;
 import java.io.IOException;
 
@@ -30,6 +31,7 @@ public class SpaceshipGame {
     private Button continueButton;
     private Button mainMenuButton;
 
+
     private GroupManager groupManager;
  
     private Laser laser;
@@ -39,6 +41,7 @@ public class SpaceshipGame {
     private Image menuBack;
     private EnemyShip enemyShip, selectedEnemyShip;
     private Boss bossShip, selectedBossShip;
+    private Random rand = new Random();
     private int movementCounter = 0; // Used for timing the enemy laser shots
     private int bossLaserCounter = 0; // Used for timing the boss laser shots
     private int playerCounter = 0; // Used for timing the player laser shots
@@ -46,9 +49,11 @@ public class SpaceshipGame {
    
     private int currentHP, lives, currentLives, currentScore;
 
-    private double laserSpeed = 50;
+    private double initialSpeed = 50;
 
-    private boolean gameOver, pause = true, bossTime = false, explosionExists = false;
+    private boolean outOfBounds, gameOver, pause = true, wonGame = false, bossTime = false, explosionExists = false;
+
+    private Random random;
 
     public SpaceshipGame() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         canvas = new CanvasWindow("Babylon-5", CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -111,6 +116,7 @@ public class SpaceshipGame {
         continueButton = new Button("CONTINUE");
         continueButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2);
        
+
         mainMenuButton = new Button("Return Back to Menu");
         mainMenuButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2 + 50);
 
@@ -119,6 +125,8 @@ public class SpaceshipGame {
 
         startButton.onClick(() -> {
             resetGame();
+            // bossShip.setBossHealth(1000);
+            // enemyShip.setEnemyHealth(50);
         });
   
         continueButton.onClick(() -> {
@@ -137,6 +145,7 @@ public class SpaceshipGame {
          * Keeps track of the current state of the game using booleans and updates the ball's position when the
          * ball is meant to be moving.
          */
+
         canvas.animate(() -> {
             if(!pause){
                 explosionCounter ++;
@@ -149,9 +158,7 @@ public class SpaceshipGame {
                     }
                 }
                 if (bossTime && !gameOver) {
-                    if (bossShip.getBossY() < 30) {
-                        bossShip.moveBoss();
-                    }
+                    bossShip.moveBoss();
                     bossShipCollision();
                 }
                 playerShipCollision();
@@ -183,12 +190,12 @@ public class SpaceshipGame {
         if (bossShip.checkLaserCollision(groupManager)) {
             selectedBossShip = bossShip;
         }
-        if (bossLaserCounter == 30) {
-            createSideLasers();
-        }
         if (bossLaserCounter == 40) {
             createMiddleLasers();
             bossLaserCounter = 0;
+        }
+        if (bossLaserCounter == 30) {
+            createSideLasers();
         }
         updateCurrentHealth();
         updateCurrentScore();
@@ -217,9 +224,10 @@ public class SpaceshipGame {
                 selectedEnemyShip = enemyShip;
                 explosionCounter = 0;
             }
-            if (movementCounter == 109) { //was 111
+            if (movementCounter == 111) {
                 movementCounter = 0;
                 createLaser(enemyShip.getEnemyX(), enemyShip.getEnemyY() + 40, 10, -90, 0);
+
             }
         } 
         updateCurrentHealth();
@@ -291,10 +299,10 @@ public class SpaceshipGame {
      */
     private void mouseControl(){
         canvas.onMouseMove(mousePosition -> {
-            Point position = mousePosition.getPosition();
             if (!pause) {
-                if (position.getX() > 0 && position.getX() < CANVAS_WIDTH) {
-                    playerShip.setLocation(position);
+                if (mousePosition.getPosition().getX() > 0 &&
+                mousePosition.getPosition().getX() < CANVAS_WIDTH) {
+                    playerShip.setLocation(mousePosition.getPosition());
                 }
             }
         });
@@ -304,10 +312,10 @@ public class SpaceshipGame {
      * player to shoot continuously by holding the button and with individual shots with a single button press, every other
      * shot is a double laser shot. 
      */
-    private void keyControl() {
+    private void keyControl(){
         canvas.onKeyUp(key -> {
             if (key.getKey() == Key.SPACE) {
-                if (!pause && groupManager.getLaserList().size() < 5) {
+                if (!pause) {
                     createLaser(playerShip.getPosition().getX(), playerShip.getPosition().getY() - 20, 10, 90, 1);
                 }
             }
@@ -316,7 +324,7 @@ public class SpaceshipGame {
         canvas.onKeyDown(key -> {
             if (key.getKey() == Key.SPACE) {
                 playerCounter += 1;
-                if (!pause && playerCounter >= 2) {
+                if (!pause && playerCounter == 2) {
                     createLaser(playerShip.getPosition().getX(), playerShip.getPosition().getY() - 20, 10, 90, 1);
                     playerCounter = 0;
                 }
@@ -369,6 +377,7 @@ public class SpaceshipGame {
      */
     private void resetStatus() {
         gameOver = false;
+        wonGame = false;
         bossTime = false;
         explosionExists = false;
         playerCounter = 0;
@@ -378,14 +387,17 @@ public class SpaceshipGame {
     /**
      * Creates a laser on the canvas by calling the constructor in the Laser class.
      */
-    public void createLaser(double centerX, double centerY, double laserSpeed, double initialAngle, int chooseColor) {
-        laser = new Laser(centerX, centerY, laserSpeed, initialAngle, chooseColor);
+    public void createLaser(double centerX,
+                        double centerY,
+                        double initialSpeed,
+                        double initialAngle,
+                        int chooseColor) {
+        laser = new Laser(centerX, centerY, initialSpeed, initialAngle, chooseColor);
         if (chooseColor == 1) {
             groupManager.addLaser(laser);
         } else {
             groupManager.addEnemyLaser(laser);
         }
-
         canvas.add(groupManager.getLaserGroup());
         canvas.add(groupManager.getEnemyLaserGroup());
     }
@@ -401,7 +413,7 @@ public class SpaceshipGame {
     }
 
     public void createEnemyShip(double upperLeftX, double upperLeftY, double scale, double angle, double speed){
-        for (int i = 0; i < 1; i++){ //was i <5
+        for (int i = 0; i < 5; i++){ //was i <5
             for (int j = -400; j < 0; j += 100) { //was j<0
                 enemyShip = new EnemyShip(i * 15, j, scale);
                 groupManager.addEnemyShip(enemyShip);
@@ -448,11 +460,9 @@ public class SpaceshipGame {
         createPlayerShip(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, 0.2);
         livesDisplay.setText("Lives: " + currentLives);
         scoreDisplay.setText("Score: " + currentScore);
-
         canvas.add(scoreDisplay);
         canvas.add(lifeDisplay);
         canvas.add(livesDisplay);
-
         canvas.pause(100);
     }
 
@@ -465,12 +475,17 @@ public class SpaceshipGame {
         scoreDisplay.setFont(FontStyle.BOLD,30);
         scoreDisplay.setFillColor(Color.WHITE);
         scoreDisplay.setPosition(15,CANVAS_HEIGHT - 20);
-
         lifeDisplay.setFont(FontStyle.BOLD,30);
         lifeDisplay.setFillColor(Color.WHITE);
         lifeDisplay.setPosition(200,CANVAS_HEIGHT - 20);
-
         createEnemyShip(220, 100, 0.17, 50, 70);
+    }
+
+    /**
+     * Convenience to return a random floating point number, min ≤ n < max.
+     */
+    public double randomDouble(double min, double max) {
+        return random.nextDouble() * (max - min) + min;
     }
 
     @Override
