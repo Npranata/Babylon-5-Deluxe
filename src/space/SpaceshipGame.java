@@ -121,6 +121,7 @@ public class SpaceshipGame {
         mainMenuButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2 + 50);
 
         canvas.add(scoreDisplay);
+
         createMainMenu();
 
         startButton.onClick(() -> {
@@ -398,8 +399,6 @@ public class SpaceshipGame {
         } else {
             groupManager.addEnemyLaser(laser);
         }
-        canvas.add(groupManager.getLaserGroup());
-        canvas.add(groupManager.getEnemyLaserGroup());
     }
 
     /**
@@ -471,6 +470,8 @@ public class SpaceshipGame {
         imageBack.setCenter(0,0);
         imageBack.setScale(2);
         canvas.add(imageBack);
+        canvas.add(groupManager.getLaserGroup());
+        canvas.add(groupManager.getEnemyLaserGroup());
 
         scoreDisplay.setFont(FontStyle.BOLD,30);
         scoreDisplay.setFillColor(Color.WHITE);
