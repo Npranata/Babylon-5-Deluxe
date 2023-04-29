@@ -7,19 +7,18 @@ import edu.macalester.graphics.events.Key;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.io.File;
 import java.io.IOException;
 
 import javax.sound.sampled.*;
 
 /**
- * A game of [REDACTED].
+ * Babylon-5
  * 
- * Use the mouse to move the paddle to the left and right. The ball will move to the right if it hits right of the middle
- * of the paddle and left if it hits left of the middle of the paddle.
- * If you manage to break all of the bricks along the top, then you win! 
- * If the ball leaves the play zone three tiimes, you lose.
+ * Use the mouse to move the ship to anywhere in the game window. Enemy ships will come down from the top and shoot at your
+ * ship, so try to avoid their lasers! If you manage to destroy all of the enemy ships, then you must defeat the boss
+ * ship in order to win. Make sure to target its center and avoid the lasers.
+ * If your ship is destroyed two times, you lose.
  */
 public class SpaceshipGame {
     private static final int CANVAS_WIDTH = 620, CANVAS_HEIGHT = 800;
@@ -31,7 +30,6 @@ public class SpaceshipGame {
     private Button continueButton;
     private Button mainMenuButton;
 
-
     private GroupManager groupManager;
  
     private Laser laser;
@@ -41,7 +39,6 @@ public class SpaceshipGame {
     private Image menuBack;
     private EnemyShip enemyShip, selectedEnemyShip;
     private Boss bossShip, selectedBossShip;
-    private Random rand = new Random();
     private int movementCounter = 0; // Used for timing the enemy laser shots
     private int bossLaserCounter = 0; // Used for timing the boss laser shots
     private int playerCounter = 0; // Used for timing the player laser shots
@@ -52,9 +49,9 @@ public class SpaceshipGame {
     private double initialSpeed = 50;
 
     private boolean outOfBounds, gameOver, pause = true, wonGame = false, bossTime = false, explosionExists = false;
-
-    private Random random;
-
+   /**
+    * Constructs the game's aspects based on parameters that set its center and size.
+    */
     public SpaceshipGame() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         canvas = new CanvasWindow("Babylon-5", CANVAS_WIDTH, CANVAS_HEIGHT);
         imageBack = new Image(CANVAS_WIDTH, CANVAS_HEIGHT);   
@@ -137,8 +134,8 @@ public class SpaceshipGame {
 
         mainMenuButton.onClick(()->{
             resetStatus();
-            currentScore = 0;
             createMainMenu();
+            currentScore = 0;
         });
 
         /*
@@ -159,7 +156,9 @@ public class SpaceshipGame {
                     }
                 }
                 if (bossTime && !gameOver) {
-                    bossShip.moveBoss();
+                    if (bossShip.getBossY() < 30) {
+                        bossShip.moveBoss();
+                    }
                     bossShipCollision();
                 }
                 playerShipCollision();
@@ -382,7 +381,9 @@ public class SpaceshipGame {
         bossTime = false;
         explosionExists = false;
         playerCounter = 0;
-        currentLives = 2;
+        if (currentScore == 0) {
+            currentLives = 2;
+        }
     }
 
     /**
@@ -470,8 +471,6 @@ public class SpaceshipGame {
         imageBack.setCenter(0,0);
         imageBack.setScale(2);
         canvas.add(imageBack);
-        canvas.add(groupManager.getLaserGroup());
-        canvas.add(groupManager.getEnemyLaserGroup());
 
         scoreDisplay.setFont(FontStyle.BOLD,30);
         scoreDisplay.setFillColor(Color.WHITE);
@@ -480,13 +479,8 @@ public class SpaceshipGame {
         lifeDisplay.setFillColor(Color.WHITE);
         lifeDisplay.setPosition(200,CANVAS_HEIGHT - 20);
         createEnemyShip(220, 100, 0.17, 50, 70);
-    }
-
-    /**
-     * Convenience to return a random floating point number, min ≤ n < max.
-     */
-    public double randomDouble(double min, double max) {
-        return random.nextDouble() * (max - min) + min;
+        canvas.add(groupManager.getLaserGroup());
+        canvas.add(groupManager.getEnemyLaserGroup());
     }
 
     @Override

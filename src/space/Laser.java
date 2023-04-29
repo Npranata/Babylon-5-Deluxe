@@ -1,27 +1,26 @@
 package space;
 
 import edu.macalester.graphics.*;
-import java.util.Random;
 
 /**
- * Represents a ball that follows a straight path on the canvas, bouncing off of anything that it collides with.
- * When the ball hits a brick, the brick is broken.
+ * Represents a laser shot from a ship that follows a straight path on the canvas.
+ * When the laser hits an opposing ship, the laser is removed.
  */
 public class Laser {
-    private static final double LASER_RADIUS = 10;
-
     private double centerX, centerY, initialSpeed, initialAngle, currentXVelocity, currentYVelocity;
+    private Image laserImage;
     private int chooseColor;
 
-    private Image laserImage;
-
-    public Laser(
-            double centerX,
-            double centerY,
-            double initialSpeed,
-            double initialAngle,
-            int chooseColor) {
-
+   /**
+    * Constructs a laser object that is shot from a ship. 
+    *
+    * @param centerX The x-value of the center of the laser.
+    * @param centerY The y-value of the center of the laser.
+    * @param initialSpeed The speed of the laser when it is first shot.
+    * @param initialAngle The angle of the laser when it is first shot.
+    * @param chooseColor An integer used to determine which color the laser should be.
+    */
+    public Laser(double centerX, double centerY, double initialSpeed, double initialAngle, int chooseColor) {
         this.centerX = centerX;
         this.centerY = centerY;
         this.initialSpeed = initialSpeed;
@@ -38,50 +37,52 @@ public class Laser {
         currentYVelocity = initialYVelocity;
     }
 
+    /**
+     * Chooses the image for the laser to be shot from a ship.
+     * @param chooseColor An integer used to differentiate between player lasers and enemy lasers.
+     * @return The image of the laser with the appropriate color for which ship shot it.
+     */
     private Image getImageColor(int chooseColor) {
-        Image laserImage;
         if (chooseColor == 1) {
             laserImage = new Image("ship-icons/laser.png");
             laserImage.rotateBy(-90);
-
         } else {
             laserImage = new Image("ship-icons/enemyLaser.png");
             laserImage.rotateBy(90);
-
         }
         return laserImage;
     }
 
     /**
-     * Returns the x-value of the laser's upper left corner box for use in collision detection.
+     * Returns the x-value of the laser's upper left corner box for use in bounds detection.
      */
     public double getX() {
         return laserImage.getPosition().getX();
     }
 
     /**
-     * Returns the y-value of the laser's upper left corner box for use in collision detection.
+     * Returns the y-value of the laser's upper left corner box for use in bounds detection.
      */
     public double getY() {
         return laserImage.getPosition().getY();
     }
 
     /**
-     * Sets the ball's current velocity in the horizontal direction.
+     * Sets the laser's current velocity in the horizontal direction.
      */
     public void setXVelocity(double velocity) {
         currentXVelocity = velocity;
     }
 
     /**
-     * Sets the ball's current velocity in the vertical direction.
+     * Sets the laser's current velocity in the vertical direction.
      */
     public void setYVelocity(double velocity) {
         currentYVelocity = velocity;
     }
 
     /**
-     * Moves the laser according to current dx and dy
+     * Moves the laser using its set horizontal and vertical velocities.
      */
     public void moveLaser(){
         laserImage.moveBy(currentXVelocity, currentYVelocity);
@@ -89,6 +90,9 @@ public class Laser {
         centerY = laserImage.getCenter().getY();
     }
     
+    /**
+     * @return The visual representation of a laser.
+     */
     public Image getLaserImage(){
         return laserImage;
     }
