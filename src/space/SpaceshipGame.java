@@ -111,11 +111,11 @@ public class SpaceshipGame {
         
         // Button that the user presses to restart the game after a win or loss.
         continueButton = new Button("CONTINUE");
-        continueButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2);
+        continueButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2 - 15);
        
 
         mainMenuButton = new Button("Return Back to Menu");
-        mainMenuButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2 + 50);
+        mainMenuButton.setPosition(CANVAS_WIDTH/2 - 80, CANVAS_HEIGHT/2 + 20);
 
         canvas.add(scoreDisplay);
 
@@ -138,12 +138,14 @@ public class SpaceshipGame {
             currentScore = 0;
         });
 
+        mouseControl();
+        keyControl();
+
         /*
          * Animates the canvas when a pause screen (i.e. Start, Win, or Game Over) is not displayed (when pause = false).
          * Keeps track of the current state of the game using booleans and updates the ball's position when the
          * ball is meant to be moving.
          */
-
         canvas.animate(() -> {
             if(!pause){
                 explosionCounter ++;
@@ -152,7 +154,9 @@ public class SpaceshipGame {
                         enemyShipMovementAndLasers();
                     } else {
                         bossTime = true;
+                        canvas.remove(groupManager.getLaserGroup()); // Ensures that player lasers go over the boss image
                         createBossShip(CANVAS_WIDTH/2, -500);
+                        canvas.add(groupManager.getLaserGroup());
                     }
                 }
                 if (bossTime && !gameOver) {
@@ -170,8 +174,6 @@ public class SpaceshipGame {
                 }
             }
         });
-        mouseControl();
-        keyControl();
     }
 
     private void createMainMenu() {
@@ -190,12 +192,16 @@ public class SpaceshipGame {
         if (bossShip.checkLaserCollision(groupManager)) {
             selectedBossShip = bossShip;
         }
-        if (bossLaserCounter == 40) {
-            createMiddleLasers();
-            bossLaserCounter = 0;
-        }
         if (bossLaserCounter == 30) {
             createSideLasers();
+        }
+        if (bossLaserCounter == 40) {
+            createMiddleLasers();
+        }
+
+        if (bossLaserCounter == 50) {
+            createLowerLasers();
+            bossLaserCounter = 0;
         }
         updateCurrentHealth();
         updateCurrentScore();
@@ -209,6 +215,11 @@ public class SpaceshipGame {
     public void createMiddleLasers() {
         createLaser(bossShip.getBossX() - 30, bossShip.getBossY() + 200, 10, -90, 0);
         createLaser(bossShip.getBossX() + 30, bossShip.getBossY() + 200, 10, -90, 0);
+    }
+
+    public void createLowerLasers() {
+        createLaser(bossShip.getBossX() - 130, bossShip.getBossY() + 250, 10, -90, 0);
+        createLaser(bossShip.getBossX() + 130, bossShip.getBossY() + 250, 10, -90, 0);
     }
 
     /**
@@ -362,6 +373,8 @@ public class SpaceshipGame {
      * Pauses the game to prevent another round from starting and displays the appropriate message.
      */
     private void endGame() {
+        updateCurrentHealth();
+        updateCurrentScore();
         pause = true;
         if (gameOver) {
             canvas.add(gameOverText);
@@ -413,7 +426,7 @@ public class SpaceshipGame {
     }
 
     public void createEnemyShip(double upperLeftX, double upperLeftY, double scale, double angle, double speed){
-        for (int i = 0; i < 5; i++){ //was i <5
+        for (int i = 0; i < 1; i++){ //was i <5
             for (int j = -400; j < 0; j += 100) { //was j<0
                 enemyShip = new EnemyShip(i * 15, j, scale);
                 groupManager.addEnemyShip(enemyShip);
@@ -463,7 +476,6 @@ public class SpaceshipGame {
         canvas.add(scoreDisplay);
         canvas.add(lifeDisplay);
         canvas.add(livesDisplay);
-        canvas.pause(100);
     }
 
     private void startGame() {

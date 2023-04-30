@@ -13,7 +13,7 @@ public class Boss {
 
    private Laser selectedLaser;
    private double centerX, centerY;
-   private int bossHealth = 50;
+   private int bossHealth = 500;
 
    /**
     * Constructs a boss ship based on parameters that set its center and size. 
