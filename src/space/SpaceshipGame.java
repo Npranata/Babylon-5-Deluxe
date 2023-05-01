@@ -42,7 +42,7 @@ public class SpaceshipGame {
     private int movementCounter = 0; // Used for timing the enemy laser shots
     private int bossLaserCounter = 0; // Used for timing the boss laser shots
     private int playerCounter = 0; // Used for timing the player laser shots
-    private int explosionCounter = 0;
+    private int explosionCounter = 0; // Used for timing when the explosion is removed
    
     private int currentHP, lives, currentLives, currentScore;
 
@@ -50,7 +50,7 @@ public class SpaceshipGame {
 
     private boolean outOfBounds, gameOver, pause = true, wonGame = false, bossTime = false, explosionExists = false;
    /**
-    * Constructs the game's aspects based on parameters that set its center and size.
+    * Constructs the game's background, initial score, intial lives, music, and animations.
     */
     public SpaceshipGame() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         canvas = new CanvasWindow("Babylon-5", CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -61,6 +61,7 @@ public class SpaceshipGame {
         currentLives = 2; // Stores the number of lives the user has at the moment.
         currentScore = 0;
 
+        //Uses a wav file for the game's music and make sure it is looped so the music goes on forever
         File file = new File("res/ship-icons/Without_Fear.wav");
         AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
         Clip clip = AudioSystem.getClip();
@@ -113,7 +114,7 @@ public class SpaceshipGame {
         continueButton = new Button("CONTINUE");
         continueButton.setPosition(CANVAS_WIDTH/2 - 50, CANVAS_HEIGHT/2 - 15);
        
-
+        // Button that the user presses to return back to the main menu 
         mainMenuButton = new Button("Return Back to Menu");
         mainMenuButton.setPosition(CANVAS_WIDTH/2 - 80, CANVAS_HEIGHT/2 + 20);
 
@@ -123,8 +124,6 @@ public class SpaceshipGame {
 
         startButton.onClick(() -> {
             resetGame();
-            // bossShip.setBossHealth(1000);
-            // enemyShip.setEnemyHealth(50);
         });
   
         continueButton.onClick(() -> {
@@ -176,6 +175,14 @@ public class SpaceshipGame {
         });
     }
 
+    public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        SpaceshipGame game = new SpaceshipGame();
+    }
+
+    /*
+    * Creates the game's main menu. This method is also used when the user pressses
+    * the return to mai menu utton
+    */
     private void createMainMenu() {
         canvas.removeAll();
         groupManager.removeAll();
@@ -187,6 +194,11 @@ public class SpaceshipGame {
         canvas.add(startButton);
      }
     
+    /*
+    *  Controls the frequency of the laser that the boss ship shoots using a laser counter, 
+    * ,handles the laser collision with the boss ship, updates the boss ship's current health, 
+    *  updates the boss ship's current health, and updates the current score if the boss ship is destroyed.
+    */
     private void bossShipCollision() {
         bossLaserCounter ++;
         if (bossShip.checkLaserCollision(groupManager)) {
@@ -207,16 +219,25 @@ public class SpaceshipGame {
         updateCurrentScore();
     }
 
+    /*
+    *Createtes the lasers that the boss shoots in a 45 degrees angle.
+    */
     public void createSideLasers() {
         createLaser(bossShip.getBossX() - 160, bossShip.getBossY() + 250, 10, -45, 0);
         createLaser(bossShip.getBossX() + 150, bossShip.getBossY() + 250, 10, -135, 0);
     }
-
+    /*
+    *Creates the laser the boss shoots in a straight direction from the middle of the ship.
+    */
     public void createMiddleLasers() {
-        createLaser(bossShip.getBossX() - 30, bossShip.getBossY() + 200, 10, -90, 0);
-        createLaser(bossShip.getBossX() + 30, bossShip.getBossY() + 200, 10, -90, 0);
+        createLaser(bossShip.getBossX() - 30, bossShip.getBossY() + 10, 12, -90, 0);
+        createLaser(bossShip.getBossX() + 30, bossShip.getBossY() + 10, 12, -90, 0);
     }
 
+    /*
+    *Creates the laser that the boss shoots in a straight direction from the lower side of 
+    * boss ship.
+    */
     public void createLowerLasers() {
         createLaser(bossShip.getBossX() - 130, bossShip.getBossY() + 250, 10, -90, 0);
         createLaser(bossShip.getBossX() + 130, bossShip.getBossY() + 250, 10, -90, 0);
@@ -238,7 +259,6 @@ public class SpaceshipGame {
             if (movementCounter == 111) {
                 movementCounter = 0;
                 createLaser(enemyShip.getEnemyX(), enemyShip.getEnemyY() + 40, 10, -90, 0);
-
             }
         } 
         updateCurrentHealth();
@@ -264,14 +284,17 @@ public class SpaceshipGame {
         }
         scoreDisplay.setText("Score: " + currentScore);
     }
-
+   /**
+    * Updates the player's current health in the game.
+    */
     private void updateCurrentHealth() {
         currentHP = playerShip.getPlayerHealth();
         lifeDisplay.setText("Health: " + currentHP);
     }
 
     /**
-    *
+    * Calls the laser collision method in the PlayerShip class. This determines whether a laser has hit the player
+    * or if the player ship has been destroyed.
     */
     private void playerShipCollision() {
         if (playerShip.checkLaserCollision(groupManager)) {
@@ -281,8 +304,9 @@ public class SpaceshipGame {
         }
     }
 
-    /** 
-     * Check laser bounds and removes it from the canvas if it goes out of bounds
+    /**
+     * Check laser bounds and removes it from the canvas if it goes out of bounds.
+     * @param currentLaserList The list of lasers that needs to be changed.
      */
     private void laserBounds(List<Laser> currentLaserList) {
         oldLasers = new ArrayList<>();
@@ -306,7 +330,7 @@ public class SpaceshipGame {
     }
     
     /** 
-     * Makes player ship move according to where the mouse moves
+     * Makes player ship move according to where the mouse's position.
      */
     private void mouseControl(){
         canvas.onMouseMove(mousePosition -> {
@@ -343,10 +367,6 @@ public class SpaceshipGame {
         });
     }
 
-    public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
-        SpaceshipGame game = new SpaceshipGame();
-    }
-
     /**
      * Triggered when the ball leaves the play zone.
      * If the player still has remaining lives, then it recreates the ball and allows the user to continue. 
@@ -369,7 +389,7 @@ public class SpaceshipGame {
     }
 
     /**
-     * Triggered when the user has lost all of their lives or broken all the bricks.
+     * Triggered when the user has lost all of their lives or beaten the boss.
      * Pauses the game to prevent another round from starting and displays the appropriate message.
      */
     private void endGame() {
@@ -394,19 +414,22 @@ public class SpaceshipGame {
         bossTime = false;
         explosionExists = false;
         playerCounter = 0;
-        if (currentScore == 0) {
+        if (currentScore == 0) { // Ensures that the number of lives is not reset when the player presses "CONTINUE"
             currentLives = 2;
         }
     }
 
     /**
-     * Creates a laser on the canvas by calling the constructor in the Laser class.
+     * Creates a laser on the canvas by calling the constructor in the Laser class. These lasers can be shot by
+     * the player ship, enemy ships, and the boss ship.
+     * 
+     * @param centerX The center x-value of the player ship image on the canvas.
+     * @param centerY The center y-value of the player ship image on the canvas.
+     * @param initialSpeed The speed a laser is moving at when it is created.
+     * @param initialAngle The angle a laser is moving at.
+     * @param chooseColor An integer that determines the color and properties of a laser.
      */
-    public void createLaser(double centerX,
-                        double centerY,
-                        double initialSpeed,
-                        double initialAngle,
-                        int chooseColor) {
+    public void createLaser(double centerX, double centerY, double initialSpeed, double initialAngle, int chooseColor) {
         laser = new Laser(centerX, centerY, initialSpeed, initialAngle, chooseColor);
         if (chooseColor == 1) {
             groupManager.addLaser(laser);
@@ -416,18 +439,31 @@ public class SpaceshipGame {
     }
 
     /**
-     * Creates a paddle on the canvas by calling the constuctor in the Paddle class.
-     * The user can control the paddle by moving the mouse cursor horizontally inside the play zone.
+     * Creates a player ship on the canvas by calling the constuctor in the PlayerShip class.
+     * The user can control the player ship by moving the mouse cursor inside the canvas.
+     * 
+     * @param centerX The center x-value of the player ship image on the canvas.
+     * @param centerY The center y-value of the player ship image on the canvas.
+     * @param scale The size of the player ship image on the canvas.
      */
-    public void createPlayerShip(double upperLeftX, double upperLeftY, double scale) {
-        playerShip = new PlayerShip(upperLeftX, upperLeftY, scale);
+    public void createPlayerShip(double centerX, double centerY, double scale) {
+        playerShip = new PlayerShip(centerX, centerY, scale);
         playerShip.setPlayerHealth(currentHP);
         canvas.add(playerShip.getPlayerShipImage());
     }
 
-    public void createEnemyShip(double upperLeftX, double upperLeftY, double scale, double angle, double speed){
-        for (int i = 0; i < 5; i++){ //was i <5
-            for (int j = -400; j < 0; j += 100) { //was j<0
+    /**
+     * Creates five rows of enemy ships that are spread across the top of the game window. Each enemy ship is 
+     * added to a graphics group and a list, and that graphics group is added to the canvas once all of the 
+     * enemy ships have been added.
+     * 
+     * @param scale The size of the enemy ship image on the canvas.
+     * @param angle The angle an enemy ship is moving at.
+     * @param speed The speed an enemy ship is moving at when it is created.
+     */
+    public void createEnemyShip(double scale, double angle, double speed){
+        for (int i = 0; i < 1; i++){ //was i <5
+            for (int j = -400; j < 0; j += 100) {
                 enemyShip = new EnemyShip(i * 15, j, scale);
                 groupManager.addEnemyShip(enemyShip);
             }
@@ -435,11 +471,22 @@ public class SpaceshipGame {
         canvas.add(groupManager.getEnemyShipGroup());
     }
 
+    /**
+     * Initializes a boss ship object and add's its image to the canvas.
+     * 
+     * @param centerX The center x-value of the boss ship on the canvas.
+     * @param centerY The center y-value of the boss ship on the canvas.
+     */
     public void createBossShip(double centerX, double centerY) {
         bossShip = new Boss(centerX, centerY, 2);
         canvas.add(bossShip.getBossIcon());
     }
 
+    /**
+     * Whenever the explosion is added to the canvas, a boolean is updated and
+     * a counter keeps track of how long it has been on the canvas. Once the counter reaches a certain point, it runs this
+     * method, which removes the explosion from the canvas.
+     */
     public void explosionCheck() {
         if (explosionExists) {
             groupManager.getCanvas().remove(groupManager.getExplosion());
@@ -448,8 +495,8 @@ public class SpaceshipGame {
     }
 
     /**
-     * Resets the canvas by removing everything on the canvas and all the bricks that had been created.
-     * Then creates the game components for a new round and allows the game to run.
+     * Resets the game by removing everything on the canvas and all the lasers and enemy ships that had been created.
+     * Creates the game components for a new round and allows the game to run.
      */
     private void resetGame() {
         groupManager.removeAll();
@@ -465,9 +512,8 @@ public class SpaceshipGame {
     }
 
     /**
-     * Initializes the elements of the play zone, varying its creation based on whether a new game is starting or
-     * if the user is continuing a game.
-     * After the components are prepared, the game is paused for a moment to ready the player before it starts.
+     * Updates the elements of the play zone and prepares the game for user interaction. The canvas' elements are removed
+     * before this method runs, so it adds the HUD data as well.
      */
     private void createGame() {
         createPlayerShip(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, 0.2);
@@ -478,6 +524,11 @@ public class SpaceshipGame {
         canvas.add(livesDisplay);
     }
 
+    /**
+     * Adds the background image to the game window, and then subsequently the score and health indicators
+     * to the HUD. Babylon-5 uses this method to create the first stage of the game before the boss, so the method also,
+     * calls the constructor for the enemy ships.
+     */
     private void startGame() {
         imageBack.setImagePath("ship-icons/spaceBackground.png"); 
         imageBack.setCenter(0,0);
@@ -487,10 +538,12 @@ public class SpaceshipGame {
         scoreDisplay.setFont(FontStyle.BOLD,30);
         scoreDisplay.setFillColor(Color.WHITE);
         scoreDisplay.setPosition(15,CANVAS_HEIGHT - 20);
+
         lifeDisplay.setFont(FontStyle.BOLD,30);
         lifeDisplay.setFillColor(Color.WHITE);
         lifeDisplay.setPosition(200,CANVAS_HEIGHT - 20);
-        createEnemyShip(220, 100, 0.17, 50, 70);
+        
+        createEnemyShip(0.17, 50, 70);
         canvas.add(groupManager.getLaserGroup());
         canvas.add(groupManager.getEnemyLaserGroup());
     }
