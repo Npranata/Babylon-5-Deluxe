@@ -79,10 +79,10 @@ public class EnemyShip {
      * If an enemy ship leaves the canvas window, it returns to its original position.
      * @param canvas The game window in order to check if the enemy ship goes outside of it.
      */
-    public void moveEnemyShip(CanvasWindow canvas){
+    public void moveEnemyShip(double canvasWidth, double canvasHeight){
         enemyShipIcon.moveBy(currentXVelocity, currentYVelocity);
-        if (enemyShipIcon.getCenter().getX() > canvas.getWidth() + 100 || 
-        enemyShipIcon.getCenter().getY() > canvas.getHeight() + 300 || enemyShipIcon.getCenter().getX() < -200) {
+        if (enemyShipIcon.getCenter().getX() > canvasWidth + 100 || 
+        enemyShipIcon.getCenter().getY() > canvasHeight + 300 || enemyShipIcon.getCenter().getX() < -200) {
             enemyShipIcon.setCenter(originalX, originalY);
         }
     }

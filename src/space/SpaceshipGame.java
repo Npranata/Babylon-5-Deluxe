@@ -229,7 +229,7 @@ public class SpaceshipGame {
      */
     private void enemyShipMovementAndLasers() {
         for (EnemyShip enemyShip : groupManager.getEnemyShipList()){
-            enemyShip.moveEnemyShip(canvas);
+            enemyShip.moveEnemyShip(CANVAS_WIDTH, CANVAS_HEIGHT);
             movementCounter ++;
             if (enemyShip.checkLaserCollision(groupManager)) {
                 selectedEnemyShip = enemyShip;
