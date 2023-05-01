@@ -426,7 +426,7 @@ public class SpaceshipGame {
     }
 
     public void createEnemyShip(double upperLeftX, double upperLeftY, double scale, double angle, double speed){
-        for (int i = 0; i < 1; i++){ //was i <5
+        for (int i = 0; i < 5; i++){ //was i <5
             for (int j = -400; j < 0; j += 100) { //was j<0
                 enemyShip = new EnemyShip(i * 15, j, scale);
                 groupManager.addEnemyShip(enemyShip);
