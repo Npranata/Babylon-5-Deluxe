@@ -46,8 +46,6 @@ public class SpaceshipGame {
    
     private int currentHP, lives, currentLives, currentScore;
 
-    private double initialSpeed = 50;
-
     private boolean outOfBounds, gameOver, pause = true, wonGame = false, bossTime = false, explosionExists = false;
    /**
     * Constructs the game's background, initial score, intial lives, music, and animations.
@@ -142,8 +140,8 @@ public class SpaceshipGame {
 
         /*
          * Animates the canvas when a pause screen (i.e. Start, Win, or Game Over) is not displayed (when pause = false).
-         * Keeps track of the current state of the game using booleans and updates the ball's position when the
-         * ball is meant to be moving.
+         * Keeps track of the current state of the game using booleans and runs methods that handle ship movement
+         * and laser firing.
          */
         canvas.animate(() -> {
             if(!pause){

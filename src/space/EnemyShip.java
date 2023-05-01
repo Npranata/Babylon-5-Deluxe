@@ -87,15 +87,23 @@ public class EnemyShip {
         }
     }
 
+    /**
+    * Decreases the enemy ship's health by a set amount.
+    */
+    private void decreaseCurrentHealth() {
+        this.currentHealth -= 10;
+    }
+
    /**
     * Removes any player lasers intersecting with the enemy ship's weak points, decreasing the enemy ship"s health.
     * If the enemy ship's health goes to zero, places an explosion at the ship's location.
+    *
     * @param groupManager The class that controls lists and groups of lasers and ships.
-   */
+    */
    public boolean checkLaserCollision(GroupManager groupManager) {
         GraphicsObject element = checkCollisionPoints(groupManager);
         for (Laser laser : groupManager.getLaserList()) {
-            if (element == laser.getLaserImage()) {
+            if (element == laser.getLaserImage()) { // Loops through the player ship's lasers
                 selectedLaser = laser;
                 selectedEnemyShip = this;
             }
@@ -114,16 +122,10 @@ public class EnemyShip {
         return false;
     }
 
-    /**
-    * Decreases the enemy ship's health by a set amount.
-    */
-    private void decreaseCurrentHealth() {
-        this.currentHealth -= 10;
-    }
-
    /**
     * Checks several points on the enemy ship and determines whether there is something
     * intersecting with those points.
+    *
     * @param groupManager The class that controls lists and groups of lasers and ships.
     * @return A graphics object that is intersecting with one of the enemy ship's weak points.
     */

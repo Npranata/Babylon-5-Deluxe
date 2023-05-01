@@ -120,7 +120,7 @@ public class PlayerShip {
    */
     public boolean checkLaserCollision(GroupManager groupManager) {
         GraphicsObject element = checkCollisionPoints(groupManager);
-        for (Laser laser : groupManager.getEnemyLaserList()) {
+        for (Laser laser : groupManager.getEnemyLaserList()) { // Loops through the enemy ships' lasers
             if (element == laser.getLaserImage()) {
                 selectedLaser = laser;
             }

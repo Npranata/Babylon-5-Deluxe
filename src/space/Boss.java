@@ -66,7 +66,7 @@ public class Boss {
    */
    public boolean checkLaserCollision(GroupManager groupManager) {
        GraphicsObject element = checkCollisionPoints(groupManager);
-       for (Laser laser : groupManager.getLaserList()) {
+       for (Laser laser : groupManager.getLaserList()) { // Loops through the player ship's lasers
            if (element == laser.getLaserImage()) {
                selectedLaser = laser;
            }
