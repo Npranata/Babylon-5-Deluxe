@@ -412,6 +412,7 @@ public class SpaceshipGame {
         bossTime = false;
         explosionExists = false;
         playerCounter = 0;
+        currentLives =2;
         if (currentScore == 0) { // Ensures that the number of lives is not reset when the player presses "CONTINUE"
             currentLives = 2;
         }
