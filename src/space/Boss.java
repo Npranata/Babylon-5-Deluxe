@@ -1,4 +1,5 @@
 package space;
+
 import edu.macalester.graphics.*;
 
 /**
@@ -8,12 +9,11 @@ import edu.macalester.graphics.*;
 public class Boss {
    private Image bossShipIcon = new Image(0,0);
    private final double Y_VELOCITY = 1;
-   private Image explosion = new Image("ship-icons/explosion.png");
    private GraphicsObject element;
 
    private Laser selectedLaser;
    private double centerX, centerY;
-   private int bossHealth = 500;
+   private int bossHealth = 2000;
 
    /**
     * Constructs a boss ship based on parameters that set its center and size. 
@@ -115,4 +115,11 @@ public class Boss {
        }
        return element;
    }
+
+    @Override
+    public String toString() {
+        return "Creates a Boss ship with image " + bossShipIcon + ", vertical velocity " + Y_VELOCITY
+                + ", its center at x-value " + getBossX() + ", its center at y-value"
+                + centerY + ", and a total health pool of " + bossHealth + ".";
+    }
 }

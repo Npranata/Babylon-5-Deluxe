@@ -25,6 +25,7 @@ public class Laser {
         this.centerY = centerY;
         this.initialSpeed = initialSpeed;
         this.initialAngle = initialAngle;
+        this.chooseColor = chooseColor;
 
         laserImage = getImageColor(chooseColor);
         laserImage.setCenter(centerX, centerY);
@@ -56,15 +57,17 @@ public class Laser {
     /**
      * Returns the x-value of the laser's upper left corner box for use in bounds detection.
      */
-    public double getX() {
-        return laserImage.getPosition().getX();
+    public double getLaserX() {
+        centerX = laserImage.getCenter().getX();
+        return centerX;
     }
 
     /**
      * Returns the y-value of the laser's upper left corner box for use in bounds detection.
      */
-    public double getY() {
-        return laserImage.getPosition().getY();
+    public double getLaserY() {
+        centerY = laserImage.getCenter().getY();
+        return centerY;
     }
 
     /**
@@ -86,8 +89,8 @@ public class Laser {
      */
     public void moveLaser(){
         laserImage.moveBy(currentXVelocity, currentYVelocity);
-        centerX = laserImage.getCenter().getX();
-        centerY = laserImage.getCenter().getY();
+        centerX = getLaserX();
+        centerY = getLaserY();
     }
     
     /**
@@ -98,7 +101,8 @@ public class Laser {
     }
     
     public String toString() {
-        return "A laser with center at " 
-        + laserImage.getCenter() + ", an initial speed of " + initialSpeed + ", and an initial angle of " + initialAngle;
+        return "A laser with center at x-value " 
+        + getLaserX() + ", center at y-value " + getLaserY() + ", an initial speed of " 
+        + initialSpeed + ", an initial angle of " + initialAngle + ", and color identifier " + chooseColor + ".";
     }
 }

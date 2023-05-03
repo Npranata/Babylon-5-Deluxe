@@ -2,7 +2,7 @@ package space;
 
 import edu.macalester.graphics.*;
 
-/*
+/**
  * Represents the player ship the user uses. The user can use the mouse to move the 
  * player ship.
  */
@@ -29,26 +29,26 @@ public class PlayerShip {
         playerShipIcon.setScale(playerScale);
     }
 
-    /*
+    /**
     * A method that sets the player ship's center location to where the mouse arrow is.
     */
     public void setLocation(Point mouse) {
         playerShipIcon.setCenter(mouse);
     }
-    /*
+    /**
     * A method that deducts the player ship's current health by 10. 
     */
     public void decreasePlayerHealth(){
         this.currentHealth -= 10;
     }
     /**
-    * @return The x-value of the center of the boss ship.
+    * @return The x-value of the center of the player ship.
     */
     public double getCenterX() {
         return playerShipIcon.getCenter().getX();
     }
 
-    /*
+    /**
     * Returns the player ship's center coordinates.
     */
     public Point getPosition() {
@@ -68,14 +68,14 @@ public class PlayerShip {
         return playerShipIcon;
     }
 
-    /*
+    /**
     * A method that returns the player's current health.
     */
     public int getPlayerHealth() {
         return currentHealth;
     }
 
-    /*
+    /**
     * A method that sets what the player health is. 
     */
     public void setPlayerHealth(int currentHP) {
@@ -116,6 +116,7 @@ public class PlayerShip {
    /**
     * Removes any player lasers intersecting with the player ship's points, decreasing the player' health.
     * If the player's health goes to zero, places the explosion on the player's ship.
+    *
     * @param groupManager The class that controls lists and groups of lasers and ships.
    */
     public boolean checkLaserCollision(GroupManager groupManager) {
@@ -138,9 +139,12 @@ public class PlayerShip {
         }
         return false;
     }
-
+    @Override
     public String toString() {
-        return "";
+        return "Creates a player ship with image" + 
+        playerShipIcon + ", with " + 
+        currentHealth + " health, and spawns the ship" +
+        " at the user's mouse location.";
     }
 
 }

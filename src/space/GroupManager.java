@@ -1,7 +1,6 @@
 package space;
 
 import edu.macalester.graphics.CanvasWindow;
-
 import java.util.ArrayList;
 import edu.macalester.graphics.GraphicsGroup;
 import edu.macalester.graphics.Image;
@@ -21,7 +20,6 @@ public class GroupManager {
     private List<Laser> enemyLaserList;
     private GraphicsGroup enemyLaserGroup;
     private Image explosionImage = new Image("ship-icons/explosion.png");
-
 
     /**
      * Constructs a group manager for the specified window object.
@@ -187,5 +185,11 @@ public class GroupManager {
 
         enemyGroup.removeAll();
         enemyList.clear();
+    }
+
+    @Override
+    public String toString() {
+        return "Manages the canvas, " + canvas  + ", the list of enemy ships " + enemyList 
+                + ", the list of lasers: " + laserList + ", and the list of enemy lasers " + enemyLaserList + ".";
     }
 }

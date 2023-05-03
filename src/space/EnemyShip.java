@@ -2,9 +2,8 @@ package space;
 
 import edu.macalester.graphics.*;
 import java.util.Random;
-import java.util.List;
 
-/*
+/**
  * Represents the enemy ship the user uses. The enemy ships appear as soon as  
  * the user presses play. 
  */
@@ -50,13 +49,15 @@ public class EnemyShip {
     * @return The x-value of the center of the enemy ship.
     */
     public double getEnemyX() {
-        return enemyShipIcon.getCenter().getX();
+        centerX = enemyShipIcon.getCenter().getX();
+        return centerX;
     }
     /**
     * @return The y-value of the center of the enemy ship.
     */
     public double getEnemyY() {
-        return enemyShipIcon.getCenter().getY();
+        centerY = enemyShipIcon.getCenter().getY();
+        return centerY;
     }
     /**
     * Sets the initial health of the enemy ship.
@@ -153,10 +154,12 @@ public class EnemyShip {
 
         return element;
     }
-    
 
+    @Override
     public String toString() {
-        return "An enemy ship with center at " 
-        + enemyShipIcon.getCenter() + ", an initial speed of " + speed + ", and an initial angle of " + randomAngle;
+        return "An enemy ship with center at x-value " 
+        + getEnemyX() + ", its center at y-value" + getEnemyY() + ", an initial speed of " + 
+        speed + ", an initial angle of " + randomAngle + ", an origin x-value of " + originalX + ", and an origin y-value"
+        + originalY + ".";
     }
 }
