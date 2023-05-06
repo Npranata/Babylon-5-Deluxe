@@ -65,14 +65,14 @@ public class SpaceshipGame {
         clip.loop(-1);
 
         //Text that displays current Health
+        lifeDisplay = new GraphicsText();
         lifeDisplay.setFont(FontStyle.BOLD, 30);
         lifeDisplay.setFillColor(Color.WHITE);
-        lifeDisplay = new GraphicsText();
         
         //Text that displays the current score
+        scoreDisplay = new GraphicsText();
         scoreDisplay.setFont(FontStyle.BOLD,30);
         scoreDisplay.setFillColor(Color.WHITE);
-        scoreDisplay = new GraphicsText();
 
         // Text that displays the number of lives the user currently has.
         livesDisplay = new GraphicsText();
