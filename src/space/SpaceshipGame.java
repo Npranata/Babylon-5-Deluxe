@@ -529,8 +529,8 @@ public class SpaceshipGame {
 
     @Override
     public String toString() {
-        return "Creates a Babylon-5 game. The game initializes the player ship, enemy ship, boss, and lasers " +
-        "classes as objects for use in playing Babylon-5. The user has " + lives + " lives, each representing the number of tries the player has to win " + 
+        return "Creates a Babylon-5 game. The game initializes the player ship, enemy ship, boss, and laser " +
+        "classes as objects for use in playing Babylon-5. The user has " + lives + " lives, each representing the number of tries the player has to win, " + 
         "during which the user can try to defeat all enemy ships and the boss.";
     }  
 }

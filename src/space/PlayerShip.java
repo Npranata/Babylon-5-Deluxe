@@ -139,6 +139,7 @@ public class PlayerShip {
         }
         return false;
     }
+    
     @Override
     public String toString() {
         return "Creates a player ship with image" + 
@@ -146,5 +147,4 @@ public class PlayerShip {
         currentHealth + " health, and spawns the ship" +
         " at the user's mouse location.";
     }
-
 }
